@@ -4,11 +4,7 @@ SmellsLikeFail::Application.routes.draw do
   get "static_pages/help"
 
   resources :comments
-
-
   resources :games
-
-
   resources :users
 
 
