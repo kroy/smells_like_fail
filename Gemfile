@@ -26,6 +26,11 @@ end
 
 gem 'jquery-rails', '2.0.2'
 
+#@TODO make this legit.  Find out why my js runtime isn't working
+# check for updates to libv8 to fix install issues
+#gem 'therubyracer'
+#gem 'libv8', '3.11.8.0'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

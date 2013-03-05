@@ -1,4 +1,7 @@
 SmellsLikeFail::Application.routes.draw do
+  resources :games
+
+
   resources :users
 
 
