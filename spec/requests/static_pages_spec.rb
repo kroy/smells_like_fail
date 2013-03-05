@@ -12,7 +12,12 @@ describe "Static pages" do
 
     it "should have the correct title" do
       visit '/static_pages/home'
-      page.should have_selector('title', :text => "Smells Like Fail | Home")
+      page.should have_selector('title', :text => "Smells Like Fail")
+    end
+
+    it "should not have a custom page title" do
+      visit '/static_pages/home'
+      page.should_not have_selector('title', :text => '| Home')
     end
   end
 
