@@ -10,10 +10,8 @@
 #  hon_id     :string(255)
 #
 
-require 'test_helper'
+require 'spec_helper'
 
-class UserTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+describe User do
+  pending "add some examples to (or delete) #{__FILE__}"
 end

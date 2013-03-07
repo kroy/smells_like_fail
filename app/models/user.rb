@@ -10,10 +10,6 @@
 #  hon_id     :string(255)
 #
 
-require 'test_helper'
-
-class UserTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+class User < ActiveRecord::Base
+  attr_accessible :email, :nickname,:hon_id
 end
