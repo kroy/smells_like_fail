@@ -1,12 +1,13 @@
 SmellsLikeFail::Application.routes.draw do
-  get "users/new"
+  resources :users
 
   root to: 'static_pages#home'
   match '/about',   to: 'static_pages#about'
   match '/help',    to: 'static_pages#help'
   match '/recruitment', to: 'static_pages#recruitment'
   match '/contact',  to: 'static_pages#contact'
-  
+  #match '/users/:nickname', to: 'users#show'         #tells the params array that params[:nickname] comes from the rout /users/<nickname_goes_here>
+
   match '/signup',   to: 'users#new'
 
   resources :comments
