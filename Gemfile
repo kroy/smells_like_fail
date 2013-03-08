@@ -39,7 +39,7 @@ group :test do
 	gem 'win32console','1.3.0'
 end
 
-gem 'jquery-rails', '2.0.2'
+gem 'jquery-rails'#, '2.0.2'
 
 #@TODO make this legit.  Find out why my js runtime isn't working
 # check for updates to libv8 to fix install issues
