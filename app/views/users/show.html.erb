@@ -1,3 +1,17 @@
-<%= @user.nickname %>, <%= @user.email %>, <%= @user.hon_id %>
+<% provide(:title, @user.nickname) %>
+<div class="row">
+  <aside class="span4">
+    <section>
+      <h1>
+        <!--Profile_pic goes here-->
+        <%= @user.nickname.upcase %>
+      </h1>
+      <% stat_fields = acct_stats_for(@user.nickname) %>
+      <% stat_fields.each do |field| %>
+      		<p><%=field[0]%> : <%=field[1]%></p>
+      <% end %>
+    </section>
+  </aside>
+</div>
 
-<p><%= stats_for @user.nickname %></p>
+
