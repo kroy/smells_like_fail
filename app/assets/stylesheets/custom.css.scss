@@ -92,7 +92,7 @@ footer {
   a {
   	color: $gray;
   	&:hover{
-  		color: pink;
+  		color: orange;
   	}
   }
   small{
@@ -145,6 +145,35 @@ aside {
       letter-spacing: -1px;
       margin-bottom: 3px;
       margin-top: 0px;
+    }
+  }
+}
+
+/***
+*
+* Nubs dropdown styling
+*/
+
+#nubs{
+  color: orange;
+  &:hover{
+    background-color: $gray;
+  }
+}
+
+/***
+* users index 
+*/
+
+.users {
+  list-style: none;
+  margin: 0;
+  li {
+    overflow: auto;
+    padding: 10px 0;
+    border-top: 1px solid $grayLighter;
+    &:last-child {
+      border-bottom: 1px solid $grayLighter;
     }
   }
 }

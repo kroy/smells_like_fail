@@ -8,6 +8,10 @@ class UsersController < ApplicationController
   	#@nickname = @user.nickname
   end
 
+  def index
+  	@users = User.order("nickname ASC").paginate(page: params[:page], per_page: 25)
+  end
+
   def new
   end
 end

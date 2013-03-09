@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.12'
+# bootstrap occassionally causes problems with heroku
 gem 'bootstrap-sass', '~> 2.3.0.0'
+gem 'bootstrap-will_paginate'
 gem 'json'
 
 # Bundle edge Rails instead:
