@@ -6,14 +6,12 @@
         <!--Profile_pic goes here-->
         <%= @user.nickname.upcase %>
       </h1>
-      <% stat_fields = acct_stats_for(@user.nickname) %>
-      <% stat_fields.each do |field| %>
-      		<p><%=field[0]%> : <%=field[1]%></p>
-      <% end %>
+      <!--Railsify this, ie put it in a separate view or erb file-->
     </section>
   </aside>
-</div>
 
-<% User.order("nickname ASC").all.each do |user| %>
-	<p><%= link_to user.nickname, users_path(user.id) %></p>
-<%end%>
+  <div class="span8">
+    <h3>Recent Match Stats</h3>
+      <%= render '/users/match_summary' %>
+  </div>
+</div>
