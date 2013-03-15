@@ -7,11 +7,12 @@
         <%= @user.nickname.upcase %>
       </h1>
       <!--Railsify this, ie put it in a separate view or erb file-->
+      <%= render 'users/user_stats' %>
     </section>
   </aside>
 
   <div class="span8">
     <h3>Recent Match Stats</h3>
-      <%= render '/users/match_summary' %>
+      
   </div>
 </div>

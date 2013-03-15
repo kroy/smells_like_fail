@@ -1,0 +1,6 @@
+<ul>
+	<% @user_stats.each do |stat| %>
+		<li><%=stat%></li>
+	<%end%>
+</ul>
+<p>Updated <%=time_ago_in_words(@user.updated_at)%> ago</p>
