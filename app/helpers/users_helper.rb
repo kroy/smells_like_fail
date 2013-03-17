@@ -34,7 +34,6 @@ module UsersHelper
 				processed.push(inv_summ)
 			end
 		end
-		slot = 0
 		#@TODO Make this less icky
 		multimatch_raw[2].each do |stats|
 			if stats.value?(account_id)
@@ -45,7 +44,6 @@ module UsersHelper
 				end
 			end
 		end
-		#return slot
 		return processed
 	end
 

@@ -13,6 +13,12 @@
 
   <div class="span8">
     <h3>Recent Match Stats</h3>
-      
+    <% if @user.match_stats.any? %>
+      <ul>
+        <%= render @match_stats %>
+      </ul>
+    <%else%>
+      <p class="info">Sorry! No match stats to display for this user!</p>
+    <%end%>
   </div>
 </div>

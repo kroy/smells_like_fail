@@ -11,7 +11,64 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130315030403) do
+ActiveRecord::Schema.define(:version => 20130315211325) do
+
+  create_table "match_stats", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "match_id"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+    t.boolean  "win"
+    t.integer  "hero_id"
+    t.boolean  "team"
+    t.integer  "positon"
+    t.integer  "hero_kills"
+    t.integer  "deaths"
+    t.integer  "hero_assists"
+    t.integer  "level"
+    t.integer  "item_1"
+    t.integer  "item_2"
+    t.integer  "item_3"
+    t.integer  "item_4"
+    t.integer  "item_5"
+    t.integer  "item_6"
+    t.float    "rating_change"
+    t.integer  "gold_lost_deat"
+    t.integer  "secs_dead"
+    t.integer  "hero_dmg"
+    t.integer  "hero_kill_exp"
+    t.integer  "hero_kill_gold"
+    t.integer  "creep_kills"
+    t.integer  "creep_dmg"
+    t.integer  "creep_exp"
+    t.integer  "creep_gold"
+    t.integer  "neutral_kills"
+    t.integer  "neutral_dmg"
+    t.integer  "neutral_exp"
+    t.integer  "netural_gold"
+    t.integer  "building_dmg"
+    t.integer  "building_gold"
+    t.integer  "denies"
+    t.integer  "exp_denied"
+    t.integer  "gold"
+    t.integer  "gold_spent"
+    t.integer  "exp"
+    t.integer  "actions"
+    t.integer  "secs"
+    t.integer  "consumables"
+    t.integer  "wards"
+    t.string   "combo_kill"
+    t.string   "ks"
+  end
+
+  create_table "matches", :force => true do |t|
+    t.string   "match_id"
+    t.date     "date_played"
+    t.integer  "duration_seconds"
+    t.boolean  "winner"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
 
   create_table "users", :force => true do |t|
     t.string   "nickname"

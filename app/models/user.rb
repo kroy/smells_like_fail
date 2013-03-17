@@ -28,12 +28,16 @@
 #  avg_neutral_gold        :float
 #  avg_building_gold       :float
 #  avg_wards               :float
+#  mmr                     :float
+#  avg_denies              :float
 #
 
 class User < ActiveRecord::Base
   # TODO determine if I have to remove these fields from attr_accessible
   attr_accessible :nickname,:hon_id #,:email
 
+  has_many :match_stats
+  has_many :matches, :through => :match_stats
   #before_save { |user| user.email = email.downcase }
   before_save { |user| user.nickname = nickname.downcase }
   before_save { |user| user.hon_id = hon_id.downcase }
