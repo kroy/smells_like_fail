@@ -1,3 +1,15 @@
 <% provide(:title, 'Sign up') %>
 <h1>Sign up</h1>
-<p>Find me in app/views/users/new.html.erb</p>
+<div class="row">
+	<div class="span6 offset3">
+		<%= form_for(@user) do |f| %>
+			<%= f.label :nickname %>
+			<%= f.text_field :nickname%>
+
+			<%= f.label :password %>
+			<%= f.password_field :password %>
+
+			<%= f.submit "Add My Account", class: "btn btn-large btn-primary" %>
+		<% end %>
+	</div>
+</div>

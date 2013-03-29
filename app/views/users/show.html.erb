@@ -13,6 +13,7 @@
 
   <div class="span8">
     <h3>Recent Match Stats</h3>
+<<<<<<< HEAD
     <% if @user.match_stats.any? %>
       <ul>
         <%= render @match_stats %>
@@ -20,5 +21,13 @@
     <%else%>
       <p class="info">Sorry! No match stats to display for this user!</p>
     <%end%>
+=======
+      <% if @user.match_stats.any? %>
+        <ul class="match_stats">
+          <%= render @match_stats %>
+        </ul>
+        <%= will_paginate @match_stats %>
+      <% end %>
+>>>>>>> updating-users
   </div>
 </div>

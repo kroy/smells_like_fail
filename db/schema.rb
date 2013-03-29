@@ -11,17 +11,28 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(:version => 20130315211325) do
+=======
+ActiveRecord::Schema.define(:version => 20130327004436) do
+>>>>>>> updating-users
 
   create_table "match_stats", :force => true do |t|
     t.integer  "user_id"
     t.integer  "match_id"
+<<<<<<< HEAD
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
     t.boolean  "win"
     t.integer  "hero_id"
     t.boolean  "team"
     t.integer  "positon"
+=======
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.integer  "hero_id"
+    t.integer  "position"
+>>>>>>> updating-users
     t.integer  "hero_kills"
     t.integer  "deaths"
     t.integer  "hero_assists"
@@ -33,7 +44,11 @@ ActiveRecord::Schema.define(:version => 20130315211325) do
     t.integer  "item_5"
     t.integer  "item_6"
     t.float    "rating_change"
+<<<<<<< HEAD
     t.integer  "gold_lost_deat"
+=======
+    t.integer  "gold_lost_death"
+>>>>>>> updating-users
     t.integer  "secs_dead"
     t.integer  "hero_dmg"
     t.integer  "hero_kill_exp"
@@ -45,7 +60,11 @@ ActiveRecord::Schema.define(:version => 20130315211325) do
     t.integer  "neutral_kills"
     t.integer  "neutral_dmg"
     t.integer  "neutral_exp"
+<<<<<<< HEAD
     t.integer  "netural_gold"
+=======
+    t.integer  "neutral_gold"
+>>>>>>> updating-users
     t.integer  "building_dmg"
     t.integer  "building_gold"
     t.integer  "denies"
@@ -59,6 +78,14 @@ ActiveRecord::Schema.define(:version => 20130315211325) do
     t.integer  "wards"
     t.string   "combo_kill"
     t.string   "ks"
+<<<<<<< HEAD
+=======
+    t.integer  "match_number"
+    t.string   "nickname"
+    t.integer  "hon_id"
+    t.integer  "win"
+    t.integer  "team"
+>>>>>>> updating-users
   end
 
   create_table "matches", :force => true do |t|

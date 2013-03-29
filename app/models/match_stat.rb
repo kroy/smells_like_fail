@@ -49,9 +49,16 @@
 #  combo_kill     :string(255)
 #  ks             :string(255)
 #
+<<<<<<< HEAD
 
 class MatchStat < ActiveRecord::Base
   attr_accessible #:match_id, :user_id
+=======
+# 	TODO make sure records aren't duplicated
+
+class MatchStat < ActiveRecord::Base
+  attr_accessible :match_id, :user_id, :match_number
+>>>>>>> updating-users
   
   # TODO add index on user_id and match_id
   # Setting up the has_many through relationship
@@ -59,5 +66,13 @@ class MatchStat < ActiveRecord::Base
   belongs_to :match
 
   validates :user_id, presence: true
+<<<<<<< HEAD
   validates :match_id, presence: true
+=======
+  #validates :match_id, presence: true
+
+  def fill_stats(raw_hash)
+
+  end
+>>>>>>> updating-users
 end

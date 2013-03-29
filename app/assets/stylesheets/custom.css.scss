@@ -190,6 +190,24 @@ aside {
     border-top: 1px solid #e8e8e8;
   }
 }
-.content {
+.heroid {
   display: block;
+}
+
+.timestamp {
+  color: $grayLight;
+}
+
+/* forms */
+
+input, textarea, select, .uneditable-input {
+  border: 1px solid #bbb;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  @include box_sizing;
+}
+
+input {
+  height: auto !important;
 }

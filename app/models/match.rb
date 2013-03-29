@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # == Schema Information
 #
 # Table name: matches
@@ -11,6 +12,8 @@
 #  updated_at       :datetime         not null
 #
 
+=======
+>>>>>>> updating-users
 class Match < ActiveRecord::Base
   # TODO figure out which attributes should be accessible
   attr_accessible :date_played, :duration_seconds, :match_id, :winner
