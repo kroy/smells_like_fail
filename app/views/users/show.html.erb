@@ -13,6 +13,11 @@
 
   <div class="span8">
     <h3>Recent Match Stats</h3>
-      
+      <% if @user.match_stats.any? %>
+        <ul class="match_stats">
+          <%= render @match_stats %>
+        </ul>
+        <%= will_paginate @match_stats %>
+      <% end %>
   </div>
 </div>
