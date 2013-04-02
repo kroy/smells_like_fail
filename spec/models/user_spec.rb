@@ -28,6 +28,8 @@
 #  avg_neutral_gold        :float
 #  avg_building_gold       :float
 #  avg_wards               :float
+#  mmr                     :float
+#  avg_denies              :float
 #
 
 require 'spec_helper'

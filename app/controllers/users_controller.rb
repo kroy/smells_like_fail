@@ -3,7 +3,9 @@ class UsersController < ApplicationController
   def show
   	@user = User.find(params[:id])
     @user_stats = @user.stats_returner(true)
-    @match_stats = @user.match_stats.paginate(page: params[:page], per_page: 25)
+    @match_stats = @user.match_stats.paginate(page: params[:page], per_page: 25).order('created_at DESC')
+    @player = true
+    #@items = items
     #@recent_stats = recent_game_stats_for(@user.nickname)
     #if !@user.user_stats.any?
 
@@ -33,10 +35,19 @@ class UsersController < ApplicationController
         # TODO this is bad fix it
         stats.each_key {|field| @user.send("#{field}=", stats[field])}
         if @user.save
-          recent_string = recent_game_stats_for(@user.nickname)
+          recent_string = recent_game_stats_for(@user)
           if recent_string
             recent_string.each do |statline|
               ms = @user.match_stats.build()
+              # TODO this needs to go in a separate place. Only here so i can get it working
+              # if the corresponding match doesn't exist, create it
+              match = Match.find_by_match_number(statline[:match_number])
+              if !match
+                match = Match.new(:match_number => statline[:match_number], :duration_seconds => statline[:secs], 
+                        :winner => ((statline[:win] + statline[:team])%2 +1)) #add date played
+                match.save
+              end
+              ms.match_id = match.id
               statline.each_key {|field| ms.send("#{field}=", statline[field])}
               #ms.win = statline[:win]
               ms.save #continue
@@ -49,22 +60,47 @@ class UsersController < ApplicationController
     render 'new'
   end
 
+  def update
+    recent_string = recent_game_stats_for(@user)
+    if recent_string
+      recent_string.each do |statline|
+        ms = @user.match_stats.build()
+        # TODO this needs to go in a separate place. Only here so i can get it working
+        # if the corresponding match doesn't exist, create it
+        match = Match.find_by_match_number(statline[:match_number])
+        if !match
+          match = Match.new(:match_number => statline[:match_number], :duration_seconds => statline[:secs], 
+                  :winner => ((statline[:win] + statline[:team])%2 +1)) #add date played
+          match.save
+        end
+        ms.match_id = match.id
+        statline.each_key {|field| ms.send("#{field}=", statline[field])}
+        #ms.win = statline[:win]
+        ms.save #continue
+      end
+    end
+    redirect_to @user
+  end
+
   #   Returns the last 25 matches this player has played
   #   TODO: Check for errors eg if the player has fewer than 25 matches
   #     Potentially have these methods take in the user obj
   #     make sure these records don't get duplicated
+  #     add a game-date/time to the match/matchstat objects
   #
-  def recent_game_stats_for(nick)
+  def recent_game_stats_for(usr)
     refined = []
     begin
       processed = []
-      account_id = User.find_by_nickname(nick).hon_id     #TODO make this better.  Use user id for everything.
-      full_history = match_history_for(nick)          #returns an array whose 0th element is a comma-separated string of all matches played since 2011
+      account_id = usr.hon_id     #TODO make this better.  Use user id for everything.
+      full_history = match_history_for(usr.nickname)          #returns an array whose 0th element is a comma-separated string of all matches played since 2011
       history_split = full_history[0]["history"].split(',') #separate the matches, which are further separated into "<match-id>| 2 | <date>"
-      recent_string_25 = history_split[-25].split('|')[0]   #string of the last 25 match ids separated by a "+"
-      history_split[-24,24].each do |frag|
-        recent_string_25 << "+" << frag.split('|')[0]
-      end
+      #recent_string_25 = history_split[-25].split('|')[0]   
+      #history_split[-24,24].each do |frag| #string of the last 25 match ids separated by a "+"
+      #  recent_string_25 << "+" << frag.split('|')[0]
+      #end
+      arr_25 = history_split.collect {|match| match.split('|')[0]}
+      recent_string_25 = arr_25.join("+")
       multimatch_raw = match_stats_multimatch_for(recent_string_25)
       
       multimatch_raw[1].each do |inv_summ|
@@ -85,7 +121,7 @@ class UsersController < ApplicationController
         end
       end
       # This is a pain TODO fix it
-      #refined = processed.inject([]) do |r, p|
+      #refined = processed.inject([]) do |r, p|kroy
       #refined = processed.collect do |p|
       processed.each do |p|
         refined << {:win => p["wins"].to_i, :hero_id => p["hero_id"].to_i, :team => p["team"].to_i, :position => p["position"].to_i, :hero_kills => p["herokills"].to_i,
@@ -114,6 +150,11 @@ class UsersController < ApplicationController
 
   def match_stats_multimatch_for(matchId)
     json = open "http://api.heroesofnewerth.com/multi_match/all/matchids/#{matchId}/?token=#{TOKEN}"
+    return JSON.parse(json.read)
+  end
+
+  def items
+    json = open "http://api.heroesofnewerth.com/items/name/Item_Weapon1/?token=#{TOKEN}"
     return JSON.parse(json.read)
   end
 end

@@ -1,0 +1,24 @@
+<% provide(:title, "Match " + @match.match_number.to_s) %>
+<div class="row">
+  <aside class="span3">
+    <section>
+      <h1>
+        <!--Profile_pic goes here-->
+        <%= @match.match_number %>
+      </h1>
+      <!--Railsify this, ie put it in a separate view or erb file-->
+      
+    </section>
+  </aside>
+
+  <div class="span9">
+    <h4>Players</h4>
+
+      <p><%= @statshash %></p>
+      <% if @match.match_stats.any? %>
+        <table class="table table-condensed match_stats">
+          <%= render @match_stats, :player => @player %>
+        </table>
+      <% end %>
+  </div>
+</div>

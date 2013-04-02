@@ -28,6 +28,8 @@
 #  avg_neutral_gold        :float
 #  avg_building_gold       :float
 #  avg_wards               :float
+#  mmr                     :float
+#  avg_denies              :float
 #
 
 class User < ActiveRecord::Base
@@ -55,24 +57,24 @@ class User < ActiveRecord::Base
   # TODO add error handling from acct_stats_fetch
   # TODO fix this so that I can add a new user without saving the stats
   def stats_returner(refresh)
-    returner = {}
+    returner = nil
     stats = {}
     if refresh
       stats = acct_stats_fetch(self.nickname)
-      # I don't want to save the stats in this method.  I should delegate that responsibility to another method
-      #stats.each_key do |field|
-      #  user.send("#{field}=", stats[field])
-      #end
-      #user.save
       returner = stats
-    else
-      returner = {"hon_id" =>self.hon_id, "mmr"=>self.mmr, "games_played" => self.games_played, "wins"=>self.wins, "losses"=>self.losses, "kills"=>self.kills, 
-                    "deaths"=>self.deaths, "assists"=>self.assists, "secs"=>self.secs, "secs_dead"=>self.secs_dead, "avg_hero_damage"=>self.avg_hero_damage,
-                    "avg_exp"=>self.avg_exp, "gold"=>self.gold, "avg_gold_from_hero_kill"=>self.avg_gold_from_hero_kill,
-                    "avg_gold_lost_deaths"=>self.avg_gold_lost_deaths, "avg_creep_kills"=>self.avg_creep_kills, "avg_creep_exp"=>self.avg_creep_exp,
-                    "avg_creep_gold"=>self.avg_creep_gold, "avg_neutral_kills"=>self.avg_neutral_kills, "avg_neutral_exp"=>self.avg_neutral_exp,
-                    "avg_neutral_gold"=>self.avg_neutral_gold, "avg_building_gold"=>self.avg_building_gold, "avg_wards"=>self.avg_wards,
-                    "avg_denies"=>self.avg_denies}
+    end
+    if !refresh or !returner
+      begin
+        returner = {"hon_id" =>self.hon_id, "mmr"=>self.mmr, "games_played" => self.games_played, "wins"=>self.wins, "losses"=>self.losses, "kills"=>self.kills, 
+                      "deaths"=>self.deaths, "assists"=>self.assists, "secs"=>self.secs, "secs_dead"=>self.secs_dead, "avg_hero_damage"=>self.avg_hero_damage,
+                      "avg_exp"=>self.avg_exp, "gold"=>self.gold, "avg_gold_from_hero_kill"=>self.avg_gold_from_hero_kill,
+                      "avg_gold_lost_deaths"=>self.avg_gold_lost_deaths, "avg_creep_kills"=>self.avg_creep_kills, "avg_creep_exp"=>self.avg_creep_exp,
+                      "avg_creep_gold"=>self.avg_creep_gold, "avg_neutral_kills"=>self.avg_neutral_kills, "avg_neutral_exp"=>self.avg_neutral_exp,
+                      "avg_neutral_gold"=>self.avg_neutral_gold, "avg_building_gold"=>self.avg_building_gold, "avg_wards"=>self.avg_wards,
+                      "avg_denies"=>self.avg_denies}
+      rescue
+        returner = false
+      end
     end
     return returner
   end

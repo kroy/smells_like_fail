@@ -149,6 +149,30 @@ aside {
   }
 }
 
+.userstats {
+  table-border: none;
+  margin: 0 0 0 0;
+
+  /*tr {
+    padding: 5px 0;
+    border-top: 1px solid #e8e8e8; 
+  }*/
+
+  .mmr {
+    font-size: 1.35em;
+    text-align: center;
+  }
+
+  .statfield {
+    text-align: left;
+    color: gray;
+  }
+
+  .statvalue {
+    text-align: center;
+  }
+}
+
 /***
 *
 * Nubs dropdown styling
@@ -183,7 +207,7 @@ aside {
 */
 .matchhistory {
   list-style: none;
-  margin: 10px 0 0 0;
+  margin: 0 0 0 0;
 
   li {
     padding: 10px 0;
@@ -191,11 +215,50 @@ aside {
   }
 }
 .heroid {
-  display: block;
 }
 
 .timestamp {
   color: $grayLight;
+}
+
+.position-0 {
+  background-color: blue;
+}
+
+.position-1 {
+  background-color: teal;
+}
+
+.position-2 {
+  background-color: purple;
+}
+
+.position-3 {
+  background-color: yellow;
+}
+
+.position-4 {
+  background-color: orange;
+}
+
+.position-5 {
+  background-color: pink;
+}
+
+.position-6 {
+  background-color: $grayLighter;
+}
+
+.position-7 {
+  background-color: #d9edf7;
+}
+
+.position-8 {
+  background-color: green;
+}
+
+.position-9 {
+  background-color:   brown;
 }
 
 /* forms */
@@ -211,3 +274,4 @@ input, textarea, select, .uneditable-input {
 input {
   height: auto !important;
 }
+

@@ -1,6 +1,6 @@
 <% provide(:title, @user.nickname) %>
 <div class="row">
-  <aside class="span4">
+  <aside class="span3">
     <section>
       <h1>
         <!--Profile_pic goes here-->
@@ -8,15 +8,17 @@
       </h1>
       <!--Railsify this, ie put it in a separate view or erb file-->
       <%= render 'users/user_stats' %>
+      <%= button_to "Refresh", {:action => "update"}, {:class => "btn btn-inverse", :method => "put"} %>
+      <p><%= @printer %></p>
     </section>
   </aside>
 
-  <div class="span8">
-    <h3>Recent Match Stats</h3>
+  <div class="span9">
+    <h4>Recent Match Stats</h4>
       <% if @user.match_stats.any? %>
-        <ul class="match_stats">
-          <%= render @match_stats %>
-        </ul>
+        <table class="table table-condensed match_stats">
+          <%= render @match_stats, :player => @player%>
+        </table>
         <%= will_paginate @match_stats %>
       <% end %>
   </div>

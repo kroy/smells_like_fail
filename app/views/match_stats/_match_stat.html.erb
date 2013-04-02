@@ -1,6 +1,24 @@
-<li>
-  <span class="heroid"><%= match_stat.hero_id %></span>
-  <span class="timestamp">
-    Created <%= time_ago_in_words(match_stat.created_at) %> ago.
-  </span>
-</li>
+<% if @player and match_stat.win == 1 %>
+	<% color="success" %>
+<% elsif @player %>
+	<% color="error" %>
+<% else color="position-#{match_stat.position}" %>
+<% end %>
+<tr class=<%=color%>>
+  <td class="heroid"><%= image_tag("http://www.heroesofnewerth.com/images/heroes/#{match_stat.hero_id}/icon_128.jpg", alt: "test", size:"30x30") %></td>
+  <%if !@player %>
+  	<td class="nickname"> <%= match_stat.nickname %> </td>
+  <% end%>
+  <td class="kda"><%= match_stat.hero_kills %>/<%= match_stat.deaths %>/<%= match_stat.hero_assists %></td>
+  <td class="creepstats"><%= match_stat.creep_kills %>/<%=match_stat.denies%></td>
+  <td class="gpm"><%= ((match_stat.gold.to_f/match_stat.secs.to_f)*60).round(2)%></td>
+  <td class="apm"><%= ((match_stat.actions.to_f/match_stat.secs.to_f)*60).round(2)%></td>
+  <td class="inventory"><%= (1..6).reduce(" ") {|str, slot| str << match_stat.send("item_#{slot}").to_s << "|"} %></td>
+  <% if @player %>
+  	<td class="rsc-link"><%= link_to "Game Page ->", match_path(match_stat.match_id) %></td>
+  <% elsif match_stat.user_id %>
+  	<td class="rsc-link"> <%= link_to "Player Page ->", user_path(match_stat.user_id) %> </td>
+  <% else %>
+    <td class="rsc-link"> <%= link_to "Sign Up ->", new_user_path %> </td>
+  <% end %>
+</tr>

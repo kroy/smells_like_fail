@@ -1,6 +1,39 @@
-<ul>
-	<% @user_stats.each do |stat| %>
-		<li><%=stat%></li>
-	<%end%>
-</ul>
-<p>Updated <%=time_ago_in_words(@user.updated_at)%> ago</p>
+<% if @user_stats %>
+	<table class="table table-condensed table-hover userstats">
+		<tr>
+			<td class="statfield">MMR:</td>
+			<td class="mmr"><%=@user_stats["mmr"].round(0)%></li>
+		</tr>
+		<tr>
+			<td class="statfield">KDR:</td>
+			<td class="statvalue"><%=(@user_stats["kills"].to_f/@user_stats["deaths"].to_f).round(3)%></li>
+		</tr>
+		<tr>
+			<td class="statfield">K+ADR:</td>
+			<td class="statvalue"><%=((@user_stats["kills"].to_f+@user_stats["assists"].to_f)/@user_stats["deaths"].to_f).round(3)%></li>
+		</tr>
+		<tr>
+			<td class="statfield">Games Played:</td>
+			<td class="statvalue"><%=@user_stats["games_played"]%></li>
+		</tr>
+		<tr>
+			<td class="statfield">Avg GPM:</td>
+			<td class="statvalue"><%=(@user_stats["gold"].to_f/@user_stats["secs"].to_f*60).round(2)%></li>
+		</tr>
+		<tr>
+			<td class="statfield">Avg Creep Stats:</td>
+			<td class="statvalue"><%=@user_stats["avg_creep_kills"].round(0)%>/<%=@user_stats["avg_denies"].round(0)%></li>
+		</tr>
+		<tr>
+			<td class="statfield">Wards/game:</td>
+			<td class="statvalue"><%=@user_stats["avg_wards"]%></li>
+		</tr>
+		<tr>
+			<td class="statfield">% Time Dead:</td>
+			<td class="statvalue"><%=(@user_stats["secs_dead"].to_f/@user_stats["secs"].to_f*100).round(0)%>%</li>
+		</tr>
+	</table>
+	<p>Updated <%=time_ago_in_words(@user.updated_at)%> ago</p>
+<% else %>
+	<p>Sorry! We could't find this user's stats!</p>
+<%end%>
