@@ -3,7 +3,7 @@ class MatchesController < ApplicationController
 	def show
 		@match = Match.find(params[:id])
 		@match_stats = @match.match_stats.order('position ASC')
-		@player = false
+		#@player = false
 		if @match_stats.size < 10
 			update
 			@match_stats = @match.match_stats.order('position ASC')

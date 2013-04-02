@@ -17,7 +17,7 @@
       <p><%= @statshash %></p>
       <% if @match.match_stats.any? %>
         <table class="table table-condensed match_stats">
-          <%= render @match_stats, :player => @player %>
+          <%= render @match_stats, :player => false %>
         </table>
       <% end %>
   </div>

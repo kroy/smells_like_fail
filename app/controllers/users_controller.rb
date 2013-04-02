@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   	@user = User.find(params[:id])
     @user_stats = @user.stats_returner(true)
     @match_stats = @user.match_stats.paginate(page: params[:page], per_page: 25).order('created_at DESC')
-    @player = true
+    #@player = true
     #@items = items
     #@recent_stats = recent_game_stats_for(@user.nickname)
     #if !@user.user_stats.any?
@@ -42,7 +42,7 @@ class UsersController < ApplicationController
               # TODO this needs to go in a separate place. Only here so i can get it working
               # if the corresponding match doesn't exist, create it
               match = Match.find_by_match_number(statline[:match_number])
-              if !match
+              unless match
                 match = Match.new(:match_number => statline[:match_number], :duration_seconds => statline[:secs], 
                         :winner => ((statline[:win] + statline[:team])%2 +1)) #add date played
                 match.save
@@ -68,7 +68,7 @@ class UsersController < ApplicationController
         # TODO this needs to go in a separate place. Only here so i can get it working
         # if the corresponding match doesn't exist, create it
         match = Match.find_by_match_number(statline[:match_number])
-        if !match
+        unless match
           match = Match.new(:match_number => statline[:match_number], :duration_seconds => statline[:secs], 
                   :winner => ((statline[:win] + statline[:team])%2 +1)) #add date played
           match.save

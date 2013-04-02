@@ -17,7 +17,7 @@
     <h4>Recent Match Stats</h4>
       <% if @user.match_stats.any? %>
         <table class="table table-condensed match_stats">
-          <%= render @match_stats, :player => @player%>
+          <%= render @match_stats, :player => true%>
         </table>
         <%= will_paginate @match_stats %>
       <% end %>
