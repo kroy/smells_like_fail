@@ -2,8 +2,15 @@ class UsersController < ApplicationController
   TOKEN = "KSXOOT43JUQJ2RQM"
   def show
   	@user = User.find(params[:id])
-    @user_stats = @user.stats_returner(true)
+    #refresh = @user.last_updated > 5.seconds.ago
+    refresh = true
+    @user_stats = @user.stats_returner(refresh)
+    if refresh
+      @user_stats.each_key {|field| @user.send("#{field}=", @user_stats[field])}
+      @user.save
+    end
     @match_stats = @user.match_stats.paginate(page: params[:page], per_page: 25).order('created_at DESC')
+    #json = open "http://api.heroesofnewerth.com/match/all/matchid/113755555/?token=#{TOKEN}"
     #@player = true
     #@items = items
     #@recent_stats = recent_game_stats_for(@user.nickname)
@@ -61,7 +68,12 @@ class UsersController < ApplicationController
   end
 
   def update
+
+    @user = User.find(params[:id])
+    logger.debug "In update event for user #{@user.inspect}"
     recent_string = recent_game_stats_for(@user)
+    #logger.debug "Recent String: #{recent_string}"
+    #user_stats = recent_string.select{|s| s["hon_id"] == @user.hon_id}
     if recent_string
       recent_string.each do |statline|
         ms = @user.match_stats.build()
@@ -100,7 +112,9 @@ class UsersController < ApplicationController
       #  recent_string_25 << "+" << frag.split('|')[0]
       #end
       arr_25 = history_split.collect {|match| match.split('|')[0]}
+      arr_25 = arr_25[-25,25] if arr_25.size >= 25
       recent_string_25 = arr_25.join("+")
+      #logger.debug "Recent String: #{recent_string_25}"
       multimatch_raw = match_stats_multimatch_for(recent_string_25)
       
       multimatch_raw[1].each do |inv_summ|
@@ -136,7 +150,10 @@ class UsersController < ApplicationController
                   :gold_spent => p["gold_spent"].to_i, :exp => p["exp"].to_i, :actions => p["actions"].to_i, :secs => p["secs"].to_i, 
                   :consumables => p["consumables"].to_i, :wards => p["wards"].to_i, :nickname => p["nickname"], :hon_id => p["account_id"].to_i, :match_number => p["match_id"].to_i}
       end
-    rescue
+      #TODO outsource this to MatchStat model
+      #refined = MatchStat.parse_match(multimatch_raw)
+    rescue Exception => e
+      logger.debug e
       refined = false
     end
     

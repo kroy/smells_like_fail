@@ -63,7 +63,7 @@ class User < ActiveRecord::Base
       stats = acct_stats_fetch(self.nickname)
       returner = stats
     end
-    if !refresh or !returner
+    unless refresh or returner
       begin
         returner = {"hon_id" =>self.hon_id, "mmr"=>self.mmr, "games_played" => self.games_played, "wins"=>self.wins, "losses"=>self.losses, "kills"=>self.kills, 
                       "deaths"=>self.deaths, "assists"=>self.assists, "secs"=>self.secs, "secs_dead"=>self.secs_dead, "avg_hero_damage"=>self.avg_hero_damage,

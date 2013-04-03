@@ -8,7 +8,7 @@
       </h1>
       <!--Railsify this, ie put it in a separate view or erb file-->
       <%= render 'users/user_stats' %>
-      <%= button_to "Refresh", {:action => "update"}, {:class => "btn btn-inverse", :method => "put"} %>
+      <%= button_to "Refresh", @user, method: :put %>
       <p><%= @printer %></p>
     </section>
   </aside>
