@@ -70,21 +70,9 @@ class MatchStat < ActiveRecord::Base
   # returns "duplicate" if the matchstat object is a duplicate
   # 	true if the matchstat is saved properly
   # 	false if there's an error
-  def fill_stats(raw_hash)
-    refined = {:win => raw_hash["wins"].to_i, :hero_id => raw_hash["hero_id"].to_i, :team => raw_hash["team"].to_i, :position => raw_hash["position"].to_i, :hero_kills => raw_hash["herokills"].to_i,
-              :deaths => raw_hash["deaths"].to_i, :hero_assists => raw_hash["heroassists"].to_i, :level => raw_hash["level"].to_i, :item_1 => raw_hash["slot_1"].to_i, 
-              :item_2 => raw_hash["slot_2"].to_i,:item_3 => raw_hash["slot_3"].to_i, :item_4 => raw_hash["slot_4"].to_i, :item_5 => raw_hash["slot_5"].to_i, :item_6 => raw_hash["slot_6"].to_i,
-              :rating_change => raw_hash["amm_team_rating"].to_f, :gold_lost_death => raw_hash["goldlost2death"].to_i, :secs_dead => raw_hash["secs_dead"].to_i, 
-              :hero_dmg => raw_hash["hero_dmg"].to_i, :hero_kill_exp => raw_hash["heroexp"].to_i, :hero_kill_gold => raw_hash["herokillsgold"].to_i, 
-              :creep_kills => raw_hash["teamcreepkills"].to_i, :creep_dmg => raw_hash["teamcreepdmg"].to_i, :creep_exp => raw_hash["teamcreepexp"].to_i, 
-              :creep_gold => raw_hash["teamcreepgold"].to_i, :neutral_kills => raw_hash["neutralcreepkills"].to_i, :neutral_dmg => raw_hash["teamcreepdmg"].to_i, 
-              :neutral_exp => raw_hash["neutralcreepexp"].to_i, :neutral_gold => raw_hash["neutralcreepgold"].to_i, :building_dmg => raw_hash["bdmg"].to_i, 
-              :building_gold => raw_hash["bgold"].to_i, :denies => raw_hash["denies"].to_i, :exp_denied => raw_hash["exp_denied"].to_i, :gold => raw_hash["gold"].to_i,
-              :gold_spent => raw_hash["gold_spent"].to_i, :exp => raw_hash["exp"].to_i, :actions => raw_hash["actions"].to_i, :secs => raw_hash["secs"].to_i, 
-              :consumables => raw_hash["consumables"].to_i, :wards => raw_hash["wards"].to_i, :nickname => raw_hash["nickname"], :hon_id => raw_hash["account_id"].to_i, :match_number => raw_hash["match_id"].to_i}
-    #if the 
-    return "duplicate" if MatchStat.where("hon_id = ? AND match_number = ?", refined[:hon_id], refined[:match_number]).any?
-    refined.each_key {|field| self.send("#{field}=", refined[field])}
+  def fill_stats(stats_hash)
+    return "duplicate" if MatchStat.where("hon_id = ? AND match_number = ?", stats_hash[:hon_id], stats_hash[:match_number]).any?
+    stats_hash.each_key {|field| self.send("#{field}=", stats_hash[field])}
     user = User.find_by_hon_id(self.hon_id)
     uid = user.hon_id if user
     self.user_id = uid if uid and !self.user_id
@@ -94,12 +82,12 @@ class MatchStat < ActiveRecord::Base
   # TODO get this working
   # Takes the full, messy array from the HoN API and puts it into something more sane
   def self.parse_match(matchstats)
-    processed = []
+    @processed = []
     #logger.debug "Matchstats[1]: #{matchstats[1]}"
     matchstats[1].each do |stats|
       matchstats[2].each do |part|
         stats.merge(part) if part["account_id"] == stats["account_id"] and part["match_id"] == stats["match_id"]
-        processed << stats
+        @processed << stats.dup
         #logger.debug "+++++++++++++++++++++++++++++ Stats: #{stats}"
       end
     end
@@ -107,9 +95,9 @@ class MatchStat < ActiveRecord::Base
     # This is a pain TODO fix it
     #refined = processed.inject([]) do |r, p|kroy
     #refined = processed.collect do |p|
-    refined = []
-    processed.each do |p|
-      refined << {:win => p["wins"].to_i, :hero_id => p["hero_id"].to_i, :team => p["team"].to_i, :position => p["position"].to_i, :hero_kills => p["herokills"].to_i,
+    @refined = []
+    @processed.each do |p|
+      @refined << {:win => p["wins"].to_i, :hero_id => p["hero_id"].to_i, :team => p["team"].to_i, :position => p["position"].to_i, :hero_kills => p["herokills"].to_i,
                 :deaths => p["deaths"].to_i, :hero_assists => p["heroassists"].to_i, :level => p["level"].to_i, :item_1 => p["slot_1"].to_i, 
                 :item_2 => p["slot_2"].to_i,:item_3 => p["slot_3"].to_i, :item_4 => p["slot_4"].to_i, :item_5 => p["slot_5"].to_i, :item_6 => p["slot_6"].to_i,
                 :rating_change => p["amm_team_rating"].to_f, :gold_lost_death => p["goldlost2death"].to_i, :secs_dead => p["secs_dead"].to_i, 
@@ -122,6 +110,6 @@ class MatchStat < ActiveRecord::Base
                 :consumables => p["consumables"].to_i, :wards => p["wards"].to_i, :nickname => p["nickname"], :hon_id => p["account_id"].to_i, :match_number => p["match_id"].to_i}
     end
     logger.debug "Refined stats: #{refined}"
-    return refined
+    return @refined
   end
 end

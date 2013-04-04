@@ -5,23 +5,12 @@ class UsersController < ApplicationController
     #refresh = @user.last_updated > 5.seconds.ago
     refresh = true
     @user_stats = @user.stats_returner(refresh)
-    if refresh
+    if refresh and @user_stats
       @user_stats.each_key {|field| @user.send("#{field}=", @user_stats[field])}
       @user.save
     end
     @match_stats = @user.match_stats.paginate(page: params[:page], per_page: 25).order('created_at DESC')
-    #json = open "http://api.heroesofnewerth.com/match/all/matchid/113755555/?token=#{TOKEN}"
-    #@player = true
-    #@items = items
-    #@recent_stats = recent_game_stats_for(@user.nickname)
-    #if !@user.user_stats.any?
-
-    #end
-  	#parsed = stats_for(@user.nickname)
-  	#games_played = parsed["rnk_games_played"]
-  	#find by a certain index
-  	#@user = User.find_by_nickname!(params[:nickname])
-  	#@nickname = @user.nickname
+    
   end
 
   def index
@@ -71,11 +60,11 @@ class UsersController < ApplicationController
 
     @user = User.find(params[:id])
     logger.debug "In update event for user #{@user.inspect}"
-    recent_string = recent_game_stats_for(@user)
+    @recent_string = recent_game_stats_for(@user)
     #logger.debug "Recent String: #{recent_string}"
     #user_stats = recent_string.select{|s| s["hon_id"] == @user.hon_id}
-    if recent_string
-      recent_string.each do |statline|
+    if @recent_string
+      @recent_string.each do |statline|
         ms = @user.match_stats.build()
         # TODO this needs to go in a separate place. Only here so i can get it working
         # if the corresponding match doesn't exist, create it
@@ -86,9 +75,10 @@ class UsersController < ApplicationController
           match.save
         end
         ms.match_id = match.id
-        statline.each_key {|field| ms.send("#{field}=", statline[field])}
+        @stats = statline.dup
+        ms.fill_stats(@stats)
         #ms.win = statline[:win]
-        ms.save #continue
+        #ms.save #continue
       end
     end
     redirect_to @user
