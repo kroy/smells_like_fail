@@ -41,7 +41,7 @@ class Match < ActiveRecord::Base
 			ms = self.match_stats.build
 			# TODO condense this into one call
 			# This will be false if the matchstat fails to save
-			stats = ms.fill_stats(usr)
+			ms.fill_stats(usr)
 			#stats.each_key {|field| ms.send("#{field}=", stats[field])}
 			# TODO add error handling
 			#ms.save

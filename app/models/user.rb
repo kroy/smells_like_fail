@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
   before_save { |user| user.nickname = nickname.downcase }
   before_save { |user| user.hon_id = hon_id.downcase }
 
-  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+  #VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :nickname, presence: true, length: { maximum: 50 },
   			uniqueness: { case_sensitive: false }
   #validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
