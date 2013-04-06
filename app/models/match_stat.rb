@@ -85,12 +85,12 @@ class MatchStat < ActiveRecord::Base
                   :building_gold => raw_hash["bgold"].to_i, :denies => raw_hash["denies"].to_i, :exp_denied => raw_hash["exp_denied"].to_i, :gold => raw_hash["gold"].to_i,
                   :gold_spent => raw_hash["gold_spent"].to_i, :exp => raw_hash["exp"].to_i, :actions => raw_hash["actions"].to_i, :secs => raw_hash["secs"].to_i, 
                   :consumables => raw_hash["consumables"].to_i, :wards => raw_hash["wards"].to_i, :nickname => raw_hash["nickname"], :hon_id => raw_hash["account_id"].to_i, :match_number => raw_hash["match_id"].to_i}
-      return "duplicate" if MatchStat.where("hon_id = ? AND match_number = ?", stats_hash[:hon_id], stats_hash[:match_number]).any?
-      stats_hash.each_key {|field| self.send("#{field}=", stats_hash[field])}
-      user = User.find_by_hon_id(self.hon_id)
-      uid = user.id if user
-      self.user_id = uid if uid and !self.user_id
-      return self.save
+      #return "duplicate" if MatchStat.where("hon_id = ? AND match_number = ?", stats_hash[:hon_id], stats_hash[:match_number]).any?
+      stats_hash.each_key {|field| ms.send("#{field}=", stats_hash[field])}
+      user = User.find_by_hon_id(ms.hon_id)
+      uid = ms.id if user
+      ms.user_id = uid if uid and !ms.user_id
+      ms.save
     }
   end
 
@@ -130,12 +130,12 @@ class MatchStat < ActiveRecord::Base
         if part["account_id"] == stats["account_id"] and part["match_id"] == stats["match_id"]
           stats.merge(part)
           #@processed << stats.dup
-          raw_hash = stats.dup
-          match = Match.where(:match_number => raw_hash["match_id"].to_i).first_or_create(:duration_seconds => raw_hash["secs"].to_i, 
-                              :winner => (((raw_hash["wins"].to_i) + (raw_hash["team"]).to_i)%2 +1)) #add date played
+          @statline = stats.dup
+          match = Match.where(:match_number => @statline["match_id"].to_i).first_or_create(:duration_seconds => @statline["secs"].to_i, 
+                              :winner => (((@statline["wins"].to_i) + (@statline["team"]).to_i)%2 +1)) #add date played
           ms = match.match_stats.build
-          #my_proc = ms.fill_stats(@statline)
-          #my_proc.call(ms)
+          my_proc = ms.fill_stats(@statline)
+          my_proc.call(ms)
         end
       end
     end
