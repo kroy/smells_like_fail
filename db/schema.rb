@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130329155809) do
+ActiveRecord::Schema.define(:version => 20130409055824) do
 
   create_table "match_stats", :force => true do |t|
     t.integer  "user_id"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(:version => 20130329155809) do
     t.integer  "hon_id"
     t.integer  "win"
     t.integer  "team"
+    t.date     "date_played"
   end
 
   create_table "matches", :force => true do |t|
@@ -77,7 +78,6 @@ ActiveRecord::Schema.define(:version => 20130329155809) do
     t.string   "nickname"
     t.datetime "created_at",              :null => false
     t.datetime "updated_at",              :null => false
-    t.string   "hon_id"
     t.integer  "games_played"
     t.integer  "wins"
     t.integer  "losses"
@@ -101,9 +101,11 @@ ActiveRecord::Schema.define(:version => 20130329155809) do
     t.float    "avg_wards"
     t.float    "mmr"
     t.float    "avg_denies"
+    t.integer  "last_match"
+    t.integer  "hon_id"
+    t.datetime "last_refreshed"
   end
 
-  add_index "users", ["hon_id"], :name => "index_users_on_hon_id", :unique => true
   add_index "users", ["nickname"], :name => "index_users_on_nickname", :unique => true
 
 end

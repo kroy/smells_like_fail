@@ -5,6 +5,7 @@
 <% else color="position-#{match_stat.position}" %>
 <% end %>
 <tr class=<%=color%>>
+  <td class-><%= match_stat.date_played.strftime("%m/%d/%y") if match_stat.date_played %></td>
   <td class="heroid"><%= image_tag("http://www.heroesofnewerth.com/images/heroes/#{match_stat.hero_id}/icon_128.jpg", alt: "test", size:"30x30") %></td>
   <%unless player %>
   	<td class="nickname"> <%= match_stat.nickname %> </td>

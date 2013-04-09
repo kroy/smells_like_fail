@@ -3,13 +3,12 @@
   <head>
     <title><%= full_title(yield(:title)) %></title>
     <%= stylesheet_link_tag    "application", media: "all" %>
-    <%= javascript_include_tag "https://www.google.com/jsapi"%>
-    <%= javascript_include_tag "application" %>
+    <!-- Figure out why this is working but just "application" is not -->
+    <%= javascript_include_tag "jquery-1.9.1", "jquery_ujs", "highcharts", "bootstrap", "users" %>
     <%= csrf_meta_tags %>
     <%= render 'layouts/shim' %>
 
     <!--Load the AJAX API-->
-
 
   </head>
   <body>

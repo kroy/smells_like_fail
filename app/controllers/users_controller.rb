@@ -1,15 +1,17 @@
 class UsersController < ApplicationController
-  TOKEN = "KSXOOT43JUQJ2RQM"
+  #TOKEN = "0WQJS7VTWA5PCNU1"
   def show
   	@user = User.find(params[:id])
     #refresh = @user.last_updated > 5.seconds.ago
-    refresh = true
-    @user_stats = @user.stats_returner(refresh)
-    if refresh and @user_stats
+    @refresh = true
+    @refresh = Time.now > @user.last_refreshed + Rails.application.config.refresh_threshold_in_seconds if @user.last_refreshed
+    @user_stats = @user.stats_returner(@refresh)
+    if @refresh and @user_stats
+      #bring this into refresh action
       @user_stats.each_key {|field| @user.send("#{field}=", @user_stats[field])}
       @user.save
     end
-    @match_stats = @user.match_stats.paginate(page: params[:page], per_page: 25).order('created_at DESC')
+    @match_stats = @user.match_stats.paginate(page: params[:page], per_page: 25).order('date_played DESC, created_at DESC')
     
   end
 
@@ -30,28 +32,9 @@ class UsersController < ApplicationController
       if stats
         # TODO this is bad fix it
         stats.each_key {|field| @user.send("#{field}=", stats[field])}
+        @user.last_refreshed = Time.now
         if @user.save
-          # @recent_string = recent_game_stats_for(@user)
-          # if @recent_string
-          #   @recent_string.each do |statline|
-          #     ms = @user.match_stats.build()
-          #     # TODO this needs to go in a separate place. Only here so i can get it working
-          #     # if the corresponding match doesn't exist, create it
-          #     match = Match.find_by_match_number(statline[:match_number])
-          #     unless match
-          #       match = Match.new(:match_number => statline["match_id"].to_i, :duration_seconds => statline["secs"].to_i, 
-          #               :winner => (((statline["wins"].to_i) + (statline["team"]).to_i)%2 +1)) #add date played
-          #       match.save
-          #     end
-          #     ms.match_id = match.id
-          #     @stats = statline.dup
-          #     ms.fill_stats(@stats)
-          #     #statline.each_key {|field| ms.send("#{field}=", statline[field])}
-          #     #ms.save
-          #   end
-          # 
-          #end
-          MatchStat.build_user(@user)
+          MatchStat.build_update_user(@user)
           redirect_to @user and return
         end
       end
@@ -64,26 +47,8 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     logger.debug "In update event for user #{@user.inspect}"
     @recent_string = recent_game_stats_for(@user)
-    #logger.debug "Recent String: #{recent_string}"
-    #user_stats = recent_string.select{|s| s["hon_id"] == @user.hon_id}
-    if @recent_string
-      @recent_string.each do |statline|
-        ms = @user.match_stats.build()
-        # TODO this needs to go in a separate place. Only here so i can get it working
-        # if the corresponding match doesn't exist, create it
-        match = Match.find_by_match_number(statline[:match_number])
-        unless match
-          match = Match.new(:match_number => statline["match_id"].to_i, :duration_seconds => statline["secs"].to_i, 
-                        :winner => (((statline["wins"].to_i) + (statline["team"]).to_i)%2 +1)) #add date played
-          match.save
-        end
-        ms.match_id = match.id
-        @stats = statline.dup
-        ms.fill_stats(@stats)
-        #statline.each_key {|field| ms.send("#{field}=", statline[field])}
-        #ms.save #continue
-      end
-    end
+    MatchStat.build_update_user(@user)
+    @user.last_refreshed = Time.now
     redirect_to @user
   end
 
@@ -145,17 +110,17 @@ class UsersController < ApplicationController
   end
 
   def match_history_for(nick)
-    json = open "http://api.heroesofnewerth.com/match_history/ranked/nickname/#{nick}/?token=#{TOKEN}"
+    json = open "http://api.heroesofnewerth.com/match_history/ranked/nickname/#{nick}/?token=#{Rails.application.config.hon_api_token}"
     return JSON.parse(json.read)
   end
 
   def match_stats_multimatch_for(matchId)
-    json = open "http://api.heroesofnewerth.com/multi_match/all/matchids/#{matchId}/?token=#{TOKEN}"
+    json = open "http://api.heroesofnewerth.com/multi_match/all/matchids/#{matchId}/?token=#{Rails.application.config.hon_api_token}"
     return JSON.parse(json.read)
   end
 
   def items
-    json = open "http://api.heroesofnewerth.com/items/name/Item_Weapon1/?token=#{TOKEN}"
+    json = open "http://api.heroesofnewerth.com/items/name/Item_Weapon1/?token=#{Rails.application.config.hon_api_token}"
     return JSON.parse(json.read)
   end
 end

@@ -64,4 +64,10 @@ SmellsLikeFail::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+  # HoN API Key for development
+  config.hon_api_token = "0WQJS7VTWA5PCNU1"
+
+  # Controls the amount of time that must have passed since the last update to this user
+  config.refresh_threshold_in_seconds = 86400   # 24 hours
 end

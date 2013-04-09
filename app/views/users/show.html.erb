@@ -8,16 +8,13 @@
       </h1>
       <!--Railsify this, ie put it in a separate view or erb file-->
       <%= render 'users/user_stats' %>
-      <%= button_to "Refresh", @user, method: :put %>
+      <%= button_to("Refresh", @user, method: :put, class: "btn btn-inverse btn-small") if @refresh %>
       <p><%= @printer %></p>
     </section>
   </aside>
 
   <div class="span9">
-    <div class="row">
-      <div id="chart_div" class="span5"></div>
-      <div id="chart_div2" class="span4"></div>
-    </div>
+    <div id="container" style:"min-width: 400px; height: 400px; margin: 0 auto"></div>
     <h4>Recent Match Stats</h4>
       <% if @user.match_stats.any? %>
         <table class="table table-condensed match_stats">

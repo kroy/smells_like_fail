@@ -2,9 +2,11 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.12'
 # bootstrap occassionally causes problems with heroku
-gem 'bootstrap-sass', '~> 2.3.0.0'
+gem 'bootstrap-sass'#, '~> 2.3.0.0'
 gem 'bootstrap-will_paginate'
 gem 'json'
+gem 'jquery-rails'#, '2.0.2'
+#gem 'highcharts'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -42,7 +44,7 @@ group :test do
 	gem 'win32console','1.3.0'
 end
 
-gem 'jquery-rails'#, '2.0.2'
+
 
 #@TODO make this legit.  Find out why my js runtime isn't working
 # check for updates to libv8 to fix install issues

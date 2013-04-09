@@ -6,7 +6,6 @@
 #  nickname                :string(255)
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
-#  hon_id                  :string(255)
 #  games_played            :integer
 #  wins                    :integer
 #  losses                  :integer
@@ -30,10 +29,12 @@
 #  avg_wards               :float
 #  mmr                     :float
 #  avg_denies              :float
+#  last_match              :integer
+#  hon_id                  :integer
 #
 
 class User < ActiveRecord::Base
-  TOKEN = "KSXOOT43JUQJ2RQM"
+  #TOKEN = "0WQJS7VTWA5PCNU1"
   # TODO determine if I have to remove these fields from attr_accessible
   attr_accessible :nickname,:hon_id #,:email
 
@@ -42,14 +43,14 @@ class User < ActiveRecord::Base
 
   #before_save { |user| user.email = email.downcase }
   before_save { |user| user.nickname = nickname.downcase }
-  before_save { |user| user.hon_id = hon_id.downcase }
+  #before_save { |user| user.hon_id = hon_id.downcase }
 
   #VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   validates :nickname, presence: true, length: { maximum: 50 },
   			uniqueness: { case_sensitive: false }
   #validates :email, presence: true, format: { with: VALID_EMAIL_REGEX },
   			#uniqueness: { case_sensitive: false }
-  validates :hon_id, presence: true, uniqueness: { case_sensitive: false } #also add length validator.  Potentially make this primary key
+  validates :hon_id, presence: true, uniqueness: true #also add length validator.  Potentially make this primary key
 
   ##   Helper Methods   ##
 
@@ -90,7 +91,7 @@ class User < ActiveRecord::Base
         #   Populate the hash to be returned to the view
         #
         numgames = unfiltered["rnk_games_played"].to_i
-        filtered["hon_id"] = unfiltered["account_id"]
+        filtered["hon_id"] = unfiltered["account_id"].to_i
         filtered["mmr"] = unfiltered["rnk_amm_team_rating"].to_f
         #filtered["account_id"] = unfiltered["account_id"]
         filtered["games_played"] = numgames

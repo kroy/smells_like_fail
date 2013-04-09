@@ -18,11 +18,11 @@ class Match < ActiveRecord::Base
   has_many :users, :through => :match_stats
   has_many :match_stats
 
-  TOKEN = "KSXOOT43JUQJ2RQM"
+  #TOKEN = "0WQJS7VTWA5PCNU1"
 
   def update_match_stats
   	#begin
-	  	json = open "http://api.heroesofnewerth.com/match/all/matchid/#{self.match_number}/?token=#{TOKEN}"
+	  	json = open "http://api.heroesofnewerth.com/match/all/matchid/#{self.match_number}/?token=#{Rails.application.config.hon_api_token}"
 		raw_hash = JSON.parse(json.read)
 		processed = raw_hash[1] #pull the inventory data from the stats hash
         raw_hash[2].each do |stats|

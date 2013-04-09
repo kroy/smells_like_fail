@@ -6,7 +6,6 @@
 #  nickname                :string(255)
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
-#  hon_id                  :string(255)
 #  games_played            :integer
 #  wins                    :integer
 #  losses                  :integer
@@ -30,6 +29,8 @@
 #  avg_wards               :float
 #  mmr                     :float
 #  avg_denies              :float
+#  last_match              :integer
+#  hon_id                  :integer
 #
 
 require 'test_helper'
