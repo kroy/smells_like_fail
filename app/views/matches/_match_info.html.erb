@@ -1,0 +1,22 @@
+<% if @match %>
+	<table class="table table-condensed table-hover userstats">
+		<tr>
+			<td class="statfield">Winner:</td>
+			<td class="winner"><%= @match.winner == 1 ? "Legion" : "Hellbourne"%></li>
+		</tr>
+		<tr>
+			<td class="statfield">Duration</td>
+			<td class="statvalue"><%="#{@match.duration_seconds/60}:%02d" %(@match.duration_seconds%60) %></li>
+		</tr>
+		<tr>
+			<td class="statfield">Avg GPM:</td>
+			<td class="statvalue">
+				<% ary = (@match_stats.reduce([]){|ary,st| ary << st.gpm}) %>
+				<%= (ary.inject(:+).to_f/ary.length).round(2) %>
+			</td>
+		</tr>
+	</table>
+	<p>Updated <%=time_ago_in_words(@match.updated_at)%> ago</p>
+<% else %>
+	<p>Sorry! We could't find this match's record!</p>
+<%end%>

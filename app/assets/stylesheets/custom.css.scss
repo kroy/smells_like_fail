@@ -205,16 +205,16 @@ aside {
 /***
 * Match History
 */
-.matchhistory {
-  list-style: none;
-  margin: 0 0 0 0;
-
-  li {
-    padding: 10px 0;
-    border-top: 1px solid #e8e8e8;
-  }
+.date {
+  font-size: .65em;
+  color: $grayLight;
+  text-align: left;
+  //display: inline;
+  font-weight: normal;
 }
+
 .heroid {
+  padding: 0px;
 }
 
 .timestamp {
@@ -222,43 +222,53 @@ aside {
 }
 
 .position-0 {
-  background-color: blue;
+  border-width: 2px;
+  border-color: rgba(1%,1%,48%,.8);
 }
 
 .position-1 {
-  background-color: teal;
+  border-width: 2px;
+  border-color: rgba(1%,1%,48%,.8);
 }
 
 .position-2 {
-  background-color: purple;
+  border-width: 2px;
+  border-color: rgba(1%,1%,48%,.8);
 }
 
 .position-3 {
-  background-color: yellow;
+  border-width: 2px;
+  border-color: rgba(1%,1%,48%,.8);
 }
 
 .position-4 {
-  background-color: orange;
+  border-width: 2px;
+  border-color: rgba(1%,1%,48%,.8);
 }
 
 .position-5 {
-  background-color: pink;
+  border-width: 2px;
+  border-color: rgba(1%,1%,48%,.8);
 }
 
 .position-6 {
-  background-color: $grayLighter;
+  border-width: 2px;
+  border-color: rgba(1%,1%,48%,.8);
 }
 
 .position-7 {
-  background-color: #d9edf7;
+  border-width: 2px;
+  border-color: rgba(1%,1%,48%,.8);
 }
 
 .position-8 {
-  background-color: green;
+  border-width: 2px;
+  border-color: rgba(1%,1%,48%,.8);
 }
 
 .position-9 {
-  background-color:   brown;
+  border-width: 2px;
+  border-color: rgba(1%,1%,48%,.8);
 }
 
 /* forms */
@@ -275,6 +285,3 @@ input {
   height: auto !important;
 }
 
-a.test {
-  font-weight: bold;
-}

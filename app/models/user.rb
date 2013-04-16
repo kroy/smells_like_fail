@@ -64,7 +64,7 @@ class User < ActiveRecord::Base
       stats = acct_stats_fetch(self.nickname)
       returner = stats
     end
-    unless refresh or returner
+    if !refresh or !returner
       begin
         returner = {"hon_id" =>self.hon_id, "mmr"=>self.mmr, "games_played" => self.games_played, "wins"=>self.wins, "losses"=>self.losses, "kills"=>self.kills, 
                       "deaths"=>self.deaths, "assists"=>self.assists, "secs"=>self.secs, "secs_dead"=>self.secs_dead, "avg_hero_damage"=>self.avg_hero_damage,
@@ -130,5 +130,9 @@ class User < ActiveRecord::Base
     rescue
         return false
     end
+  end
+
+  def creep_gpm
+    
   end
 end

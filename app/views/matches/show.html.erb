@@ -5,7 +5,9 @@
       <h1>
         <!--Profile_pic goes here-->
         <%= @match.match_number %>
+        <span class="date"><%= @match.date_played%></span>
       </h1>
+      <%= render 'matches/match_info' %>
       <!--Railsify this, ie put it in a separate view or erb file-->
       
     </section>
@@ -13,10 +15,19 @@
 
   <div class="span9">
     <h4>Players</h4>
-
-      <p><%= @statshash %></p>
       <% if @match.match_stats.any? %>
-        <table class="table table-condensed match_stats">
+        <table class="table table-condensed match-stats">
+          <thead class="table-head">
+            <tr>
+              <th></th>
+              <th>nickname</th>
+              <th>k/d/a</th>
+              <th>ck/cd</th>
+              <th>gpm</th>
+              <th>apm</th>
+              <th>items</th>
+            </tr>
+          </thead>
           <%= render @match_stats, :player => false %>
         </table>
       <% end %>

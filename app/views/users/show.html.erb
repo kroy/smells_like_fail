@@ -9,15 +9,30 @@
       <!--Railsify this, ie put it in a separate view or erb file-->
       <%= render 'users/user_stats' %>
       <%= button_to("Refresh", @user, method: :put, class: "btn btn-inverse btn-small") if @refresh %>
-      <p><%= @printer %></p>
+
+    </section>
+    <section>
+      <div id="user_chart_gold" style:" width=100% "></div>
     </section>
   </aside>
 
   <div class="span9">
-    <div id="container" style:"min-width: 400px; height: 400px; margin: 0 auto"></div>
+    <div id="progression" class="span9"></div>
     <h4>Recent Match Stats</h4>
       <% if @user.match_stats.any? %>
         <table class="table table-condensed match_stats">
+          <thead class="table-head">
+            <tr>
+              <th></th>
+              <th></th>
+              <th>k/d/a</th>
+              <th>ck/cd</th>
+              <th>gpm</th>
+              <th>apm</th>
+              <th>items</th>
+              <th></th>
+            </tr>
+          </thead>
           <%= render @match_stats, :player => true%>
         </table>
         <%= will_paginate @match_stats %>

@@ -2,16 +2,16 @@ class UsersController < ApplicationController
   #TOKEN = "0WQJS7VTWA5PCNU1"
   def show
   	@user = User.find(params[:id])
-    #refresh = @user.last_updated > 5.seconds.ago
+    # TODO @refresh controls the presence of the refresh button.  Show the button, but make it disabled instead of hiding it
     @refresh = true
     @refresh = Time.now > @user.last_refreshed + Rails.application.config.refresh_threshold_in_seconds if @user.last_refreshed
-    @user_stats = @user.stats_returner(@refresh)
-    if @refresh and @user_stats
-      #bring this into refresh action
-      @user_stats.each_key {|field| @user.send("#{field}=", @user_stats[field])}
-      @user.save
-    end
+    @user_stats = @user.stats_returner(false)
     @match_stats = @user.match_stats.paginate(page: params[:page], per_page: 25).order('date_played DESC, created_at DESC')
+    gon.gpms = @match_stats.reduce([]) {|coll, obj| coll << (obj.gpm)}.reverse
+    gon.apms = @match_stats.reduce([]) {|coll, obj| coll << (obj.apm)}.reverse
+    gon.match_numbers = @match_stats.reduce([]){|coll, obj| coll << obj.match_number}.reverse
+    gon.gold = [@user_stats["avg_creep_gold"], @user_stats["avg_neutral_gold"], 
+                  @user_stats["avg_gold_from_hero_kill"]]
     
   end
 
@@ -43,8 +43,15 @@ class UsersController < ApplicationController
   end
 
   def update
-
+    # TODO Make this cleaner and take calls to save out of the method
     @user = User.find(params[:id])
+    @refresh = true
+    @refresh = Time.now > @user.last_refreshed + Rails.application.config.refresh_threshold_in_seconds if @user.last_refreshed
+    @user_stats = @user.stats_returner(@refresh)
+    if @refresh and @user_stats
+      @user_stats.each_key {|field| @user.send("#{field}=", @user_stats[field])}
+      @user.save
+    end
     logger.debug "In update event for user #{@user.inspect}"
     @recent_string = recent_game_stats_for(@user)
     MatchStat.build_update_user(@user)

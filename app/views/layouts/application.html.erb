@@ -2,6 +2,7 @@
 <html>
   <head>
     <title><%= full_title(yield(:title)) %></title>
+    <%= include_gon %>
     <%= stylesheet_link_tag    "application", media: "all" %>
     <!-- Figure out why this is working but just "application" is not -->
     <%= javascript_include_tag "jquery-1.9.1", "jquery_ujs", "highcharts", "bootstrap", "users" %>

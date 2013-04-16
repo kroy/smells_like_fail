@@ -1,25 +1,26 @@
-<% if player and match_stat.win == 1 %>
-	<% color="success" %>
+<% if player and (match_stat.win == 1) %>
+	<% outcome="success" %>
 <% elsif player %>
-	<% color="error" %>
+	<% outcome="error" %>
 <% else color="position-#{match_stat.position}" %>
 <% end %>
-<tr class=<%=color%>>
-  <td class-><%= match_stat.date_played.strftime("%m/%d/%y") if match_stat.date_played %></td>
-  <td class="heroid"><%= image_tag("http://www.heroesofnewerth.com/images/heroes/#{match_stat.hero_id}/icon_128.jpg", alt: "test", size:"30x30") %></td>
-  <%unless player %>
-  	<td class="nickname"> <%= match_stat.nickname %> </td>
+<!--<tr class=<%=color%>>-->
+<tr <%= "class=" + outcome if outcome%>>
+  <% if player %>
+    <td class="date"><%= match_stat.date_played.strftime("%m/%d/%y") if match_stat.date_played %></td>
+  <% end %>
+  <td class="heroid <%=color%>"><%= image_tag("http://www.heroesofnewerth.com/images/heroes/#{match_stat.hero_id}/icon_128.jpg", alt: "test", size:"30x30") %></td>
+  <%if !player && match_stat.user_id %>
+  	<td class="nickname"> <%= link_to match_stat.nickname, user_path(match_stat.user_id)%> </td>
+  <%elsif !player %>
+    <td class="nickname"> <%= link_to match_stat.nickname, new_user_path%> </td>
   <% end%>
   <td class="kda"><%= match_stat.hero_kills %>/<%= match_stat.deaths %>/<%= match_stat.hero_assists %></td>
   <td class="creepstats"><%= match_stat.creep_kills %>/<%=match_stat.denies%></td>
-  <td class="gpm"><%= ((match_stat.gold.to_f/match_stat.secs.to_f)*60).round(2)%></td>
-  <td class="apm"><%= ((match_stat.actions.to_f/match_stat.secs.to_f)*60).round(2)%></td>
+  <td class="gpm"><%= match_stat.gpm %></td>
+  <td class="apm"><%= match_stat.apm %></td>
   <td class="inventory"><%= (1..6).reduce(" ") {|str, slot| str << match_stat.send("item_#{slot}").to_s << "|"} %></td>
   <% if player %>
   	<td class="rsc-link"><%= link_to "Game Page ->", match_path(match_stat.match_id) %></td>
-  <% elsif match_stat.user_id %>
-  	<td class="rsc-link"> <%= link_to "Player Page ->", user_path(match_stat.user_id) %> </td>
-  <% else %>
-    <td class="rsc-link"> <%= link_to "Sign Up ->", new_user_path %> </td>
   <% end %>
 </tr>

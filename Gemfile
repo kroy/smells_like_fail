@@ -6,6 +6,7 @@ gem 'bootstrap-sass'#, '~> 2.3.0.0'
 gem 'bootstrap-will_paginate'
 gem 'json'
 gem 'jquery-rails'#, '2.0.2'
+gem 'gon'
 #gem 'highcharts'
 
 # Bundle edge Rails instead:
