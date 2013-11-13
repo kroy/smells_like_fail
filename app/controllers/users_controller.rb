@@ -1,7 +1,10 @@
 class UsersController < ApplicationController
   #TOKEN = "0WQJS7VTWA5PCNU1"
   def show
-  	@user = User.find(params[:id])
+  	#@user = User.find(params[:id])
+    #unless @user
+    @user = User.where(nickname: params[:id]).first
+    #end
     # TODO @refresh controls the presence of the refresh button.  Show the button, but make it disabled instead of hiding it
     @refresh = true
     @refresh = Time.now > @user.last_refreshed + Rails.application.config.refresh_threshold_in_seconds if @user.last_refreshed
@@ -35,7 +38,7 @@ class UsersController < ApplicationController
         @user.last_refreshed = Time.now
         if @user.save
           MatchStat.build_update_user(@user)
-          redirect_to @user and return
+          redirect_to user_path(@user.nickname) and return
         end
       end
     end

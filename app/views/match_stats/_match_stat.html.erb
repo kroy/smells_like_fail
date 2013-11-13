@@ -11,7 +11,7 @@
   <% end %>
   <td class="heroid <%=color%>"><%= image_tag("http://www.heroesofnewerth.com/images/heroes/#{match_stat.hero_id}/icon_128.jpg", alt: "test", size:"30x30") %></td>
   <%if !player && match_stat.user_id %>
-  	<td class="nickname"> <%= link_to match_stat.nickname, user_path(match_stat.user_id)%> </td>
+  	<td class="nickname"> <%= link_to match_stat.nickname, user_path(match_stat.nickname)%> </td>
   <%elsif !player %>
     <td class="nickname"> <%= link_to match_stat.nickname, new_user_path%> </td>
   <% end%>
