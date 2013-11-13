@@ -46,7 +46,7 @@ class UsersController < ApplicationController
     # TODO Make this cleaner and take calls to save out of the method
     @user = User.find(params[:id])
     @refresh = true
-    @refresh = Time.now > @user.last_refreshed + Rails.application.config.refresh_threshold_in_seconds if @user.last_refreshed
+    #@refresh = Time.now > @user.last_refreshed + Rails.application.config.refresh_threshold_in_seconds if @user.last_refreshed
     @user_stats = @user.stats_returner(@refresh)
     if @refresh and @user_stats
       @user_stats.each_key {|field| @user.send("#{field}=", @user_stats[field])}

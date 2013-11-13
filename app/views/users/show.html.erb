@@ -14,10 +14,19 @@
     <section>
       <div id="user_chart_gold" style:" width=100% "></div>
     </section>
-  </aside>
+  </aside>  
 
   <div class="span9">
-    <div id="progression" class="span9"></div>
+      <!--<div id="progression" class="span9"></div>-->
+      <ul class="nav nav-tabs graphing" id="user_charts">
+        <li class="active"><a href="#progression-tab" data-toggle="tab">Progression</a></li>
+        <li><a href="#mmr-tab" data-toggle="tab">MMR</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane active" id="progression-tab"><div id="user-progression" style:"width=100%"></div></div>
+        <div class="tab-pane" id="mmr-tab"> <p>MMR graph goes here</p> </div>
+      </div>
     <h4>Recent Match Stats</h4>
       <% if @user.match_stats.any? %>
         <table class="table table-condensed match_stats">

@@ -34,7 +34,7 @@
 #
 
 class User < ActiveRecord::Base
-  #TOKEN = "0WQJS7VTWA5PCNU1"
+  #TOKEN = "FJ67CV1N5UZFRVRV"
   # TODO determine if I have to remove these fields from attr_accessible
   attr_accessible :nickname,:hon_id #,:email
 
@@ -83,7 +83,8 @@ class User < ActiveRecord::Base
   def acct_stats_fetch(nick)
     # TODO add error handling
     begin
-        json = open "http://api.heroesofnewerth.com/player_statistics/ranked/nickname/#{nick}/?token=#{TOKEN}"
+        logger.debug "**************entering api caller with vars: #{nick} and #{Rails.application.config.hon_api_token}"
+        json = open "http://api.heroesofnewerth.com/player_statistics/ranked/nickname/#{nick}/?token=#{Rails.application.config.hon_api_token}"
         unfiltered = JSON.parse(json.read)
         
         filtered = {}
@@ -112,9 +113,9 @@ class User < ActiveRecord::Base
         filtered["avg_creep_kills"] = (unfiltered["rnk_teamcreepkills"].to_f/numgames).round(0)
         filtered["avg_creep_exp"] = (unfiltered["rnk_teamcreepexp"].to_f/numgames).round(0)
         filtered["avg_creep_gold"] = (unfiltered["rnk_teamcreepgold"].to_f/numgames).round(0)
-        filtered["avg_neutral_kills"] = (unfiltered["rnk_teamcreepkills"].to_f/numgames).round(0)
-        filtered["avg_neutral_exp"] = (unfiltered["rnk_teamcreepexp"].to_f/numgames).round(0)
-        filtered["avg_neutral_gold"] = (unfiltered["rnk_teamcreepgold"].to_f/numgames).round(0)
+        filtered["avg_neutral_kills"] = (unfiltered["rnk_neutralcreepkills"].to_f/numgames).round(0)
+        filtered["avg_neutral_exp"] = (unfiltered["rnk_neutralcreepexp"].to_f/numgames).round(0)
+        filtered["avg_neutral_gold"] = (unfiltered["rnk_neutralcreepgold"].to_f/numgames).round(0)
         filtered["avg_building_gold"] = (unfiltered["rnk_bgold"].to_f/numgames).round(0)
         filtered["avg_wards"] = (unfiltered["rnk_wards"].to_f/numgames).round(1)
         filtered["avg_denies"] = (unfiltered["rnk_denies"].to_f/numgames).round(0)
@@ -133,6 +134,6 @@ class User < ActiveRecord::Base
   end
 
   def creep_gpm
-    
+
   end
 end

@@ -5,7 +5,7 @@
 // });
 
 $(function () {
-        $('#progression').highcharts({
+        $('#user-progression').highcharts({
             chart: {
                 type: 'line',
                 marginRight: 130,
@@ -108,3 +108,12 @@ $(function () {
             }]
         });
     });
+
+$('#user_charts a').click(function (e) {
+  e.preventDefault();
+  $(this).tab('show');
+});
+
+$(function ()  
+{ $(".game_link").tooltip();  
+});  

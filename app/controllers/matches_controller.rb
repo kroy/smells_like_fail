@@ -1,5 +1,5 @@
 class MatchesController < ApplicationController
-	TOKEN = "KSXOOT43JUQJ2RQM"
+	#TOKEN = "KSXOOT43JUQJ2RQM"
 	def show
 		@match = Match.find(params[:id])
 		@match_stats = @match.match_stats.order('position ASC')

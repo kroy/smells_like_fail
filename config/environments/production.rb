@@ -70,4 +70,7 @@ SmellsLikeFail::Application.configure do
 
   # Controls the amount of time that must have passed since the last update to this user
   config.refresh_threshold_in_seconds = 86400   # 24 hours
+
+  # Controls whether we are accepting new users or not
+  config.new_users_accepted = false
 end

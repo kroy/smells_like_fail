@@ -16,11 +16,16 @@
     <td class="nickname"> <%= link_to match_stat.nickname, new_user_path%> </td>
   <% end%>
   <td class="kda"><%= match_stat.hero_kills %>/<%= match_stat.deaths %>/<%= match_stat.hero_assists %></td>
-  <td class="creepstats"><%= match_stat.creep_kills %>/<%=match_stat.denies%></td>
+  <td class="creepstats"><%= match_stat.creep_kills + match_stat.neutral_kills%>/<%=match_stat.denies%></td>
   <td class="gpm"><%= match_stat.gpm %></td>
   <td class="apm"><%= match_stat.apm %></td>
   <td class="inventory"><%= (1..6).reduce(" ") {|str, slot| str << match_stat.send("item_#{slot}").to_s << "|"} %></td>
   <% if player %>
-  	<td class="rsc-link"><%= link_to "Game Page ->", match_path(match_stat.match_id) %></td>
+  	<td class="rsc-link">
+      <%= link_to match_path(match_stat.match_id), "data-toggle" => "tooltip", :title => "Go to game page", :class => "game_link" do %>
+        <i class="icon-chevron-right"></i>
+      <%end%>
+    </td>
   <% end %>
 </tr>
+

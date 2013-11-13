@@ -36,8 +36,11 @@ SmellsLikeFail::Application.configure do
   config.assets.debug = true
 
   # HoN API Key for development
-  config.hon_api_token = "0WQJS7VTWA5PCNU1"
-
+  config.hon_api_token = "0G4O8OMITFF9VCX3"
+  
   # Controls the amount of time that must have passed since the last update to this user
   config.refresh_threshold_in_seconds = 1
+
+  # Controls whether we are accepting new users or not
+  config.new_users_accepted = true
 end
