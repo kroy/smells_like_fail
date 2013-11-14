@@ -6,6 +6,7 @@ SmellsLikeFail::Application.routes.draw do
   match '/help',    to: 'static_pages#help'
   match '/recruitment', to: 'static_pages#recruitment'
   match '/contact',  to: 'static_pages#contact'
+  match '/notfound', to: 'static_pages#recordnotfound'
   #match '/users/:id',       to: 'users#show'
   #match '/users/:nickname', to: 'users#show'         #tells the params array that params[:nickname] comes from the route /users/<nickname_goes_here>
 

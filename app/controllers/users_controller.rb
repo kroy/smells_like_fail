@@ -1,9 +1,11 @@
 class UsersController < ApplicationController
-  #TOKEN = "0WQJS7VTWA5PCNU1"
+
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
   def show
   	#@user = User.find(params[:id])
     #unless @user
-    @user = User.where(nickname: params[:id]).first
+    @user = User.where(nickname: params[:id]).first!
     #end
     # TODO @refresh controls the presence of the refresh button.  Show the button, but make it disabled instead of hiding it
     @refresh = true
@@ -133,4 +135,10 @@ class UsersController < ApplicationController
     json = open "http://api.heroesofnewerth.com/items/name/Item_Weapon1/?token=#{Rails.application.config.hon_api_token}"
     return JSON.parse(json.read)
   end
+
+  private
+    def record_not_found
+      redirect_to "/notfound"
+    end
+
 end
