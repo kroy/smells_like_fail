@@ -1,4 +1,5 @@
 <% provide(:title, @user.nickname) %>
+<%=javascript_include_tag "users", "match_stats" %>
 <div class="row">
   <aside class="span3">
     <section>
@@ -9,6 +10,7 @@
       <!--Railsify this, ie put it in a separate view or erb file-->
       <%= render 'users/user_stats' %>
       <%= button_to("Refresh", @user, method: :put, class: "btn btn-inverse btn-small") if @refresh %>
+      <button id="test-btn">Test</button>
 
     </section>
     <section>
@@ -29,7 +31,7 @@
       </div>
     <h4>Recent Match Stats</h4>
       <% if @user.match_stats.any? %>
-        <table class="table table-condensed match_stats">
+        <table class="table table-condensed table-hover match_stats" id="user-match-stats">
           <thead class="table-head">
             <tr>
               <th></th>

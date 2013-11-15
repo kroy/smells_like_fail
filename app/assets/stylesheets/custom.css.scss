@@ -271,6 +271,12 @@ aside {
   border-color: rgba(1%,1%,48%,.8);
 }
 
+.match-stat-row {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 /* forms */
 
 input, textarea, select, .uneditable-input {

@@ -30,8 +30,8 @@ GEM
       multi_json (~> 1.0)
     annotate (2.5.0)
       rake
-    arel (3.0.2)
-    bootstrap-sass (3.0.2.1)
+    arel (3.0.3)
+    bootstrap-sass (2.3.0.1)
       sass (~> 3.2)
     bootstrap-will_paginate (0.0.10)
       will_paginate
@@ -155,7 +155,7 @@ GEM
       multi_json (~> 1.0)
       rubyzip (~> 1.0.0)
       websocket (~> 1.0.4)
-    slop (3.4.6)
+    slop (3.4.7)
     sprockets (2.2.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -182,7 +182,7 @@ PLATFORMS
 
 DEPENDENCIES
   annotate (= 2.5.0)
-  bootstrap-sass
+  bootstrap-sass (~> 2.3.0.0)
   bootstrap-will_paginate
   capybara (= 1.1.2)
   coffee-rails (= 3.2.2)

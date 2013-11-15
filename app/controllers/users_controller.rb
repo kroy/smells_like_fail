@@ -17,7 +17,14 @@ class UsersController < ApplicationController
     gon.match_numbers = @match_stats.reduce([]){|coll, obj| coll << obj.match_number}.reverse
     gon.gold = [@user_stats["avg_creep_gold"], @user_stats["avg_neutral_gold"], 
                   @user_stats["avg_gold_from_hero_kill"]]
-    
+    # TODO make this more railsy/elegant
+    mmrs = [@user.mmr]
+    index = 1
+    @match_stats.each do |match|
+      mmrs << (mmrs[index-1] + match.rating_change).round(2)
+      index+=1
+    end
+    gon.mmrs = mmrs.reverse
   end
 
   def index
@@ -122,17 +129,18 @@ class UsersController < ApplicationController
   end
 
   def match_history_for(nick)
-    json = open "http://api.heroesofnewerth.com/match_history/ranked/nickname/#{nick}/?token=#{Rails.application.config.hon_api_token}"
+    #json = open "http://api.heroesofnewerth.com/match_history/ranked/nickname/#{nick}/?token=#{Rails.application.config.hon_api_token}"
+    json = open "http://api.heroesofnewerth.com/match_history/ranked/nickname/#{nick}/?token=VSCSVSL01BZWF5F4"
     return JSON.parse(json.read)
   end
 
   def match_stats_multimatch_for(matchId)
-    json = open "http://api.heroesofnewerth.com/multi_match/all/matchids/#{matchId}/?token=#{Rails.application.config.hon_api_token}"
+    json = open "http://api.heroesofnewerth.com/multi_match/all/matchids/#{matchId}/?token=VSCSVSL01BZWF5F4"
     return JSON.parse(json.read)
   end
 
   def items
-    json = open "http://api.heroesofnewerth.com/items/name/Item_Weapon1/?token=#{Rails.application.config.hon_api_token}"
+    json = open "http://api.heroesofnewerth.com/items/name/Item_Weapon1/?token=VSCSVSL01BZWF5F4"
     return JSON.parse(json.read)
   end
 

@@ -62,7 +62,7 @@ class MatchStat < ActiveRecord::Base
   belongs_to :user
   belongs_to :match
 
-  TOKEN = "FJ67CV1N5UZFRVRV"
+  TOKEN = "VSCSVSL01BZWF5F4"
 
   #validates :user_id, presence: true
   #validates :match_id, presence: true
@@ -192,13 +192,13 @@ class MatchStat < ActiveRecord::Base
 
   def self.match_history_for(nick)
     logger.debug "**************entering api caller with vars: #{nick} and #{Rails.application.config.hon_api_token}"
-    json = open "http://api.heroesofnewerth.com/match_history/ranked/nickname/#{nick}/?token=#{Rails.application.config.hon_api_token}"
+    json = open "http://api.heroesofnewerth.com/match_history/ranked/nickname/#{nick}/?token=VSCSVSL01BZWF5F4"
     return JSON.parse(json.read)
   end
 
   def self.multimatch_stats(matchId)
     logger.debug "**************entering api caller with vars: #{matchId} and #{Rails.application.config.hon_api_token}"
-    json = open "http://api.heroesofnewerth.com/multi_match/all/matchids/#{matchId}/?token=#{Rails.application.config.hon_api_token}"
+    json = open "http://api.heroesofnewerth.com/multi_match/all/matchids/#{matchId}/?token=VSCSVSL01BZWF5F4"
     return JSON.parse(json.read)
   end
 
