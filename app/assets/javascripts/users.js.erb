@@ -69,7 +69,7 @@ $(function () {
             ]
         });
         
-        $('#mmr-tab').highcharts({
+        $('#mmr-progression').highcharts({
             chart: {
                 type: 'line',
                 marginRight: 25,
@@ -142,7 +142,7 @@ $(function () {
                 text: 'Breakdown by Source'
             },
             tooltip: {
-                //pointFormat: '{series.name}: <b>{point}%</b>',
+                pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>',
                 //percentageDecimals: 1,
                 valueDecimals: 0
             },

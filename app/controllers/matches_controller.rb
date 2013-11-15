@@ -10,6 +10,12 @@ class MatchesController < ApplicationController
 			update
 			@match_stats = @match.match_stats.order('position ASC')
 		end
+
+		gon.players = @match_stats.reduce([]) {|coll, obj| coll << (obj.nickname)}
+		gon.neut_gold = @match_stats.reduce([]) {|coll, obj| coll << (obj.neutral_gold/(obj.secs/60))}
+		gon.hero_kill_gold = @match_stats.reduce([]) {|coll, obj| coll << (obj.hero_kill_gold/(obj.secs/60))}
+		gon.creep_building_gold = @match_stats.reduce([]) {|coll, obj| coll << ((obj.creep_gold + obj.building_gold)/(obj.secs/60))}
+		gon.hero_damage_done = @match_stats.reduce([]) {|coll, obj| coll << ([obj.nickname , if (obj.hero_dmg > 0) then obj.hero_dmg else 5 end])}
 	end
 
 	def update
