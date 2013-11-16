@@ -5,6 +5,7 @@
 <% else color="position-#{match_stat.position}" %>
 <% end %>
 <!--<tr class=<%=color%>>-->
+<!--need to add a spacer between teams-->
 <!--need to make this tr tag a bit more railsy -->
 <tr class="match-stat-row <%= color if color%>" href=<%= if player then "/matches/#{match_stat.match_id}" else "/users/#{match_stat.nickname.downcase}" end%>>
   <% if player %>
@@ -18,6 +19,9 @@
   <td class="creepstats"><%= match_stat.creep_kills + match_stat.neutral_kills%>/<%=match_stat.denies%></td>
   <td class="gpm"><%= match_stat.gpm %></td>
   <td class="apm"><%= match_stat.apm %></td>
-  <td class="inventory"><%= (1..6).reduce(" ") {|str, slot| str << match_stat.send("item_#{slot}").to_s << "|"} %></td>
+  <td class="inventory"><% (1..6).each do |slot| %>
+      <%= image_tag("/assets/items/".concat(match_stat.send("item_#{slot}").to_s).concat(".jpg"), size:"30x30") if match_stat.send("item_#{slot}") > 0 %>
+    <%end%>
+  </td>
 </tr>
 
