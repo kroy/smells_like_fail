@@ -17,6 +17,10 @@ class MatchesController < ApplicationController
 		gon.creep_building_gold = @match_stats.reduce([]) {|coll, obj| coll << ((obj.creep_gold + obj.building_gold)/(obj.secs/60))}
 		gon.hero_damage_done = @match_stats.reduce([]) {|coll, obj| coll << ([obj.nickname , if (obj.hero_dmg > 0) then obj.hero_dmg else 5 end])}
 		gon.gold_lost_death = @match_stats.reduce([]) {|coll, obj| coll << (obj.gold_lost_death/(obj.secs/60))}
+		exp_denied_legion = 0
+		exp_denied_hellbourne = 0
+		@match_stats.each {|obj| (if obj.team ==1 then exp_denied_legion+=obj.exp_denied else exp_denied_hellbourne+=obj.exp_denied end )}
+		gon.exp_denied = [["Legion", exp_denied_legion], ["Hellbourne", exp_denied_hellbourne]]
 	end
 
 	def update

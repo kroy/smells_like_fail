@@ -90,4 +90,36 @@ $(function(){
             data: gon.hero_damage_done
         }]
     });
+
+	$('#exp-denied-chart').highcharts({
+		chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: 'Exp Denied by Team'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false,
+                    color: '#000000',
+                    connectorColor: '#000000',
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                },
+                colors: [
+                	"green",
+                	"#CC0000"
+                ]
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Exp Denied',
+            data: gon.exp_denied
+        }]
+	});
 });
