@@ -11,6 +11,9 @@ class MatchesController < ApplicationController
 			@match_stats = @match.match_stats.order('position ASC')
 		end
 
+		@highest_gpm = (@match_stats.max_by {|stat| stat.gold}).nickname
+		@highest_wards = (@match_stats.max_by {|stat| stat.wards}).nickname
+		
 		gon.players = @match_stats.reduce([]) {|coll, obj| coll << (obj.nickname)}
 		gon.neut_gold = @match_stats.reduce([]) {|coll, obj| coll << (obj.neutral_gold/(obj.secs/60))}
 		gon.hero_kill_gold = @match_stats.reduce([]) {|coll, obj| coll << (obj.hero_kill_gold/(obj.secs/60))}

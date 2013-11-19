@@ -15,6 +15,15 @@
 				<%= (ary.inject(:+).to_f/ary.length).round(2) %>
 			</td>
 		</tr>
+		<!--This is terrible, fix it-->
+		<tr>
+			<td class="statfield">Highest GPM</td>
+			<td class="statvalue"><%= link_to @highest_gpm, "/users/#{@highest_gpm.downcase}" %></li>
+		</tr>
+		<tr>
+			<td class="statfield">Most Wards</td>
+			<td class="statvalue"><%= link_to @highest_wards, "/users/#{@highest_wards.downcase}" %></li>
+		</tr>
 	</table>
 	<p>Updated <%=time_ago_in_words(@match.updated_at)%> ago</p>
 <% else %>
