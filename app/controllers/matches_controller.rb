@@ -24,7 +24,7 @@ class MatchesController < ApplicationController
 			@match_stats = @match.match_stats.order('position ASC')
 		end
 
-		unless @players.any?
+		if !@players.any? && Rails.application.config.event_parsing_enabled
 			@match.parse_events(nil)
 			@players = @match.events.where(event_type: "PLAYER_PROFILE").order('player ASC')
 		end
