@@ -74,6 +74,7 @@ class MatchStat < ActiveRecord::Base
   # 	true if the matchstat is saved properly
   # 	false if there's an error
   def fill_stats(raw_hash)
+    logger.debug("************** building match_stats with raw_hash: #{raw_hash}")
     stats_hash = {:win => raw_hash["wins"].to_i,
                   :hero_id => raw_hash["hero_id"].to_i,
                   :team => raw_hash["team"].to_i,
@@ -83,14 +84,15 @@ class MatchStat < ActiveRecord::Base
                   :hero_assists => raw_hash["heroassists"].to_i,
                   :level => raw_hash["level"].to_i,
                   :item_1 => raw_hash["slot_1"].to_i,
-                  :item_2 => raw_hash["slot_2"].to_i,:item_3 => raw_hash["slot_3"].to_i,
+                  :item_2 => raw_hash["slot_2"].to_i,
+                  :item_3 => raw_hash["slot_3"].to_i,
                   :item_4 => raw_hash["slot_4"].to_i,
                   :item_5 => raw_hash["slot_5"].to_i,
                   :item_6 => raw_hash["slot_6"].to_i,
                   :rating_change => raw_hash["amm_team_rating"].to_f,
                   :gold_lost_death => raw_hash["goldlost2death"].to_i,
                   :secs_dead => raw_hash["secs_dead"].to_i,
-                  :hero_dmg => raw_hash["hero_dmg"].to_i,
+                  :hero_dmg => raw_hash["herodmg"].to_i,
                   :hero_kill_exp => raw_hash["heroexp"].to_i,
                   :hero_kill_gold => raw_hash["herokillsgold"].to_i,
                   :creep_kills => raw_hash["teamcreepkills"].to_i,
@@ -142,23 +144,24 @@ class MatchStat < ActiveRecord::Base
     # TODO implement version which will look for the 25 most recent matches that haven't already been created
     #arr_25 = history_split.reduce([]) {|ary, match| ary << match.split('|')[0] unless existing_match_numbers.include?(match.split('|')[0])} #takes all of the matches and selects only the match_id (format: match_id | date | something)
     #history_hash = history_split.reduce({}) {|hsh, mtch| hsh[(mtch.split('|')[0])] = (mtch.split('|')[1])}#Date.strptime(match.split('|')[1], "%m/%d/%y")}
-    history_hash = {}
+    arr_25 = []
     history_split.each do |mtch|
-      history_hash[(mtch.split('|')[0])] = Date.strptime(mtch.split('|')[2], "%m/%d/%Y")
+      arr_25 << (mtch.split('|')[0])
     end
-    arr_25 = history_hash.keys
     arr_25 = arr_25.select {|candidate| !(existing_match_numbers.include?(candidate))}
     arr_25 = arr_25[-25,25] if arr_25.size >= 25
     recent_string_25 = arr_25.join("+")
     multimatch_raw = MatchStat.multimatch_stats(recent_string_25)
-    MatchStat.parse_and_create_match(multimatch_raw, history_hash)
+    MatchStat.parse_and_create_match(multimatch_raw)
   end
 
   # TODO get this working
   # takes in an array of matchstats and builds the matches and matchstats for them
-  def self.parse_and_create_match(matchstats, history_hash)
+  def self.parse_and_create_match(matchstats)
     #@processed = []
     #logger.debug "Matchstats[1]: #{matchstats[1]}"
+    match_datetimes = {}
+    matchstats[-1].each {|summary| match_datetimes[summary["match_id"]] = DateTime.strptime(summary["mdt"], "%Y-%m-%d %H:%M:%S")}
   
     matchstats[1].each do |stats|
       matchstats[2].each do |part|
@@ -167,7 +170,7 @@ class MatchStat < ActiveRecord::Base
           #@processed << stats.dup
           #@statline = stats.dup
           match = Match.where(:match_number => @statline["match_id"].to_i).first_or_create(:duration_seconds => @statline["secs"].to_i, 
-                              :winner => (((@statline["wins"].to_i) + (@statline["team"]).to_i)%2 +1), :date_played => history_hash[@statline["match_id"]]) #add date played
+                              :winner => (((@statline["wins"].to_i) + (@statline["team"]).to_i)%2 +1), :date_played => match_datetimes[@statline["match_id"]])
           ms = match.match_stats.build
           ms.date_played = match.date_played
           ms.fill_stats(@statline)
@@ -222,13 +225,13 @@ class MatchStat < ActiveRecord::Base
 
   def self.match_history_for(nick)
     logger.debug "**************entering api caller with vars: #{nick} and #{Rails.application.config.hon_api_token}"
-    json = open "http://api.heroesofnewerth.com/match_history/ranked/nickname/#{nick}/?token=VSCSVSL01BZWF5F4"
+    json = open "http://api.heroesofnewerth.com/match_history/ranked/nickname/#{nick}/?token=#{Rails.application.config.hon_api_token}", proxy: Rails.application.config.proxy_url
     return JSON.parse(json.read)
   end
 
   def self.multimatch_stats(matchId)
     logger.debug "**************entering api caller with vars: #{matchId} and #{Rails.application.config.hon_api_token}"
-    json = open "http://api.heroesofnewerth.com/multi_match/all/matchids/#{matchId}/?token=VSCSVSL01BZWF5F4"
+    json = open "http://api.heroesofnewerth.com/multi_match/all/matchids/#{matchId}/?token=#{Rails.application.config.hon_api_token}", proxy: Rails.application.config.proxy_url
     return JSON.parse(json.read)
   end
 

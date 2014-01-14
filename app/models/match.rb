@@ -11,12 +11,16 @@
 #  winner           :integer
 #
 
+require 'zip'
+require 'net/http'
+
 class Match < ActiveRecord::Base
   # TODO figure out which attributes should be accessible
   attr_accessible :date_played, :duration_seconds, :match_number, :winner
 
   has_many :users, :through => :match_stats
   has_many :match_stats
+  has_many :events
 
   #TOKEN = "0WQJS7VTWA5PCNU1"
 
@@ -49,5 +53,170 @@ class Match < ActiveRecord::Base
 	#rescue
 		#puts "User update failed for #{self.match_number}"
 	#end
+  end
+
+  def initialize_from_api
+
+  end
+
+  def initialize_from_log
+  	logfile = get_log
+  	logger.debug("*************Initializing match properties. Seeking to the end")
+	line = logfile.readline
+	logger.debug("*************Got match-end line: #{line.inspect}")
+	#line.encode!("UTF-8", "UTF-16le", :invalid => :replace, :undefined => :replace, replace: "", universal_newline: true)
+	#line.encode!("UTF-8", "UTF-8", :invalid => :replace, :undefined => :replace, replace: "")
+	#ewwww fix this
+	pieces = line.scan(/(?:"(?:\\.|[^"])*"|[^" ])+/)
+	logger.debug("******************pieces: #{pieces}")
+	params = parse_params(pieces[1..-1]) if pieces.length > 0
+	# duration_secs = params[:time].to_i/1000 if params[:time]
+	# winner = params[:winer].to_i if params[:winner]
+	# logfile.rewind
+	pieces = logfile.readline.scan(/(?:"(?:\\.|[^"])*"|[^" ])+/)
+	params = parse_params(pieces[1..-1]) if pieces.length > 0
+	date_played = Date.strptime(params[:date], "%Y/%d/%m") if params[:date]
+	# self.duration_seconds = duration_secs
+	# self.winner = winner
+	# self.date_played = date_played
+	return logfile
+  end
+
+  def parse_events(logfile=nil)
+  	unless logfile
+  		logfile = get_log
+  	end
+  	
+  	players = {}
+  	logfile.each do |line|
+  		logger.debug("*********Parsing line: #{line.strip}")
+  		pieces = line.scan(/(?:"(?:\\.|[^"])*"|[^" ])+/)
+		params = parse_params(pieces[1..-1]) if pieces.size>=1
+		ev = self.events.build
+		ev.match_number = self.match_number
+		case pieces[0] 
+		when "PLAYER_CONNECT"
+			players[params[:player]] = {nickname: params[:name], id: params[:id], psr: params[:psr]}
+		when "PLAYER_TEAM_CHANGE"
+			players[params[:player]][:team] = params[:team]
+		when "PLAYER_SELECT", "PLAYER_RANDOM"
+			ev.build_event("player", params, players)
+		when "PLAYER_CHAT"
+			ev.build_event("chat", params, players)
+		when "GOLD_EARNED"
+			ev.build_event("gold_earned", params, players)
+		when "EXP_EARNED"
+			ev.build_event("exp_earned", params, players)
+		when "HERO_DEATH", "HERO_ASSIST"
+			self.parse_death(pieces, params, players, logfile)
+		when "GAME_CONCEDE", "GAME_END"
+			#need to remove this logic once I get API access again
+			self.winner = params[:winner].to_i
+			self.duration_seconds = params[:time].to_i/1000
+			ev.build_event("game_end", params, players)
+		end	
+  	end
+  end
+
+  def get_log
+  	logger.debug("**************Before getting the initial resp for #{self.match_number}")
+	url = "http://replaydl.heroesofnewerth.com/replay_dl.php?file=&match_id=" + self.match_number.to_s
+	resp = Net::HTTP.get_response(URI(url))
+	logger.debug("**************Got the resp")
+	logurl = resp.to_hash["location"][0][0..-10] + "zip"
+	#Change the path of the zip files
+	fpath = Rails.root.join('tmp', 'tst.zip')
+	open(fpath, 'wb') do |file|
+		file << open(logurl).read
+		logger.debug("**************Got zip file")
+	end
+	logfilepath = Rails.root.join('tmp', 'tmp.log')
+	Zip::File.open(fpath) do |zipfile|
+		zipfile.each do |file|	
+			#logfilepath.join(file.to_s)
+			file.extract(logfilepath){true}
+			logger.debug("**************Opened the zipfile")
+		end
+	end
+	logfile = open(logfilepath.to_s, "rb:UTF-16le")
+
+	return logfile
+  end
+
+  def parse_death(pieces, params, players, logfile)
+  	logger.debug("********** Entering parse_death with line: #{pieces}")
+  	assists = {}
+  	kill = {}
+  	death = {}
+  	last_line_seen = false
+  	line = ""
+  	while(!last_line_seen)
+	  	ev = self.events.build
+	  	ev.match_number = self.match_number
+		case pieces[0]
+		when "HERO_ASSIST"
+			assists[params[:player]] = params.dup
+			logger.debug("********** So far, have assists for: #{assists.keys}")
+		when "HERO_DEATH"
+			death[params[:player]] = params.dup
+		when "KILL"
+			kill[params[:player]] = params.dup
+		when "GOLD_EARNED"
+			if assists[params[:player]] && assists[params[:player]][:gold] 
+				assists[params[:player]][:gold] = (assists[params[:player]][:gold].to_d + params[:gold].to_d).to_s
+			elsif assists[params[:player]]
+				assists[params[:player]][:gold] = params[:gold]
+			elsif kill[params[:player]]
+				kill[params[:player]][:gold] = params[:gold]
+			end
+			ev.build_event("gold_earned", params, players)
+		when "EXP_EARNED"
+			logger.debug("********** So far, have assists for: #{assists.keys}")
+			logger.debug("********** So far, have kills for: #{kill.keys}")			
+			if kill[params[:player]]
+				kill[params[:player]][:experience] = params[:experience]
+			elsif assists[params[:player]]
+				assists[params[:player]][:experience] = params[:experience]
+			end
+			ev.build_event("exp_earned", params, players)
+		when "DAMAGE"
+
+		when "GOLD_LOST"
+			logger.debug("********** So far, have death for: #{death.keys}")
+			ev.build_event("hero_death", params, players)
+			#should also add a  gold_lost event
+			last_line_seen = true
+		end
+  		unless last_line_seen
+  			line = logfile.readline
+  			logger.debug("*********Parsing line: #{line.strip}")
+  			pieces = line.scan(/(?:"(?:\\.|[^"])*"|[^" ])+/)
+			params = parse_params(pieces[1..-1]) if pieces.size>=1
+		end
+  	end
+  	logger.debug("********** Assists: #{assists}")
+	logger.debug("********** Kill: #{kill}")
+	assists.each_value do |assist|
+		logger.debug("********** Parsing assist: #{assist}")
+		ev = self.events.build()
+		ev.match_number = self.match_number
+		ev.build_event("assist", assist, players)
+	end
+	kill.each_value do |k|
+		logger.debug("********** Parsing kill: #{k}")
+		ev = self.events.build()
+		ev.match_number = self.match_number
+		ev.build_event("hero_kill", k, players)
+	end
+  	logger.debug("*********** Leaving parse_death method")
+  end
+
+  def parse_params(raw)
+  	params = {}
+	raw.each do |param|
+		params[param.split(":")[0].intern]=param.split(":")[1].tr("\"", "").strip
+	end
+
+	return params
   end
 end

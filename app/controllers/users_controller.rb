@@ -11,7 +11,7 @@ class UsersController < ApplicationController
     @refresh = true
     @refresh = Time.now > @user.last_refreshed + Rails.application.config.refresh_threshold_in_seconds if @user.last_refreshed
     @user_stats = @user.stats_returner(false)
-    @match_stats = @user.match_stats.paginate(page: params[:page], per_page: 25).order('date_played DESC, created_at DESC')
+    @match_stats = @user.match_stats.paginate(page: params[:page], per_page: 25).order('date_played DESC')
     gon.gpms = @match_stats.reduce([]) {|coll, obj| coll << (obj.gpm)}.reverse
     gon.apms = @match_stats.reduce([]) {|coll, obj| coll << (obj.apm)}.reverse
     gon.match_numbers = @match_stats.reduce([]){|coll, obj| coll << obj.match_number}.reverse
@@ -55,20 +55,24 @@ class UsersController < ApplicationController
   end
 
   def update
+    #begin
     # TODO Make this cleaner and take calls to save out of the method
-    @user = User.find(params[:id])
-    @refresh = true
-    #@refresh = Time.now > @user.last_refreshed + Rails.application.config.refresh_threshold_in_seconds if @user.last_refreshed
-    @user_stats = @user.stats_returner(@refresh)
-    if @refresh and @user_stats
-      @user_stats.each_key {|field| @user.send("#{field}=", @user_stats[field])}
-      @user.save
-    end
-    logger.debug "In update event for user #{@user.inspect}"
-    @recent_string = recent_game_stats_for(@user)
-    MatchStat.build_update_user(@user)
-    @user.last_refreshed = Time.now
-    redirect_to @user
+      @user = User.find(params[:id])
+      @refresh = true
+      #@refresh = Time.now > @user.last_refreshed + Rails.application.config.refresh_threshold_in_seconds if @user.last_refreshed
+      @user_stats = @user.stats_returner(@refresh)
+      if @refresh and @user_stats
+        @user_stats.each_key {|field| @user.send("#{field}=", @user_stats[field])}
+        @user.save
+      end
+      logger.debug "In update event for user #{@user.inspect}"
+      @recent_string = recent_game_stats_for(@user)
+      MatchStat.build_update_user(@user)
+      @user.last_refreshed = Time.now
+    #rescue Exception => e
+      #logger.error("************* User update failed with error: #{e}")
+    #end
+    redirect_to user_path(@user.nickname)
   end
 
   #   Returns the last 25 matches this player has played

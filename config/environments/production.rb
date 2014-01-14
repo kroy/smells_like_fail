@@ -66,7 +66,10 @@ SmellsLikeFail::Application.configure do
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
   # HoN API Key for development
-  config.hon_api_token = "0WQJS7VTWA5PCNU1"
+  config.hon_api_token = "AT4BXU0GQUJIIGY8"
+
+  #AWS Proxy info
+  config.proxy_url = "http://ec2-54-204-25-163.compute-1.amazonaws.com"
 
   # Controls the amount of time that must have passed since the last update to this user
   config.refresh_threshold_in_seconds = 86400   # 24 hours

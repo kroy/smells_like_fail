@@ -7,6 +7,7 @@ gem 'bootstrap-will_paginate'
 gem 'json'
 gem 'jquery-rails'#, '2.0.2'
 gem 'gon'
+gem 'rubyzip', '>= 1.0.0'
 #gem 'highcharts'
 
 # Bundle edge Rails instead:

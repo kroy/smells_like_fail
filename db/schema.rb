@@ -11,7 +11,26 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130409055824) do
+ActiveRecord::Schema.define(:version => 20140113210150) do
+
+  create_table "events", :force => true do |t|
+    t.integer  "match_id"
+    t.integer  "match_number"
+    t.string   "event_type"
+    t.integer  "time"
+    t.integer  "x"
+    t.integer  "y"
+    t.integer  "z"
+    t.integer  "player"
+    t.integer  "team"
+    t.integer  "source"
+    t.decimal  "gold"
+    t.decimal  "exp"
+    t.string   "extra_params"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+    t.string   "nickname"
+  end
 
   create_table "match_stats", :force => true do |t|
     t.integer  "user_id"
@@ -62,11 +81,11 @@ ActiveRecord::Schema.define(:version => 20130409055824) do
     t.integer  "hon_id"
     t.integer  "win"
     t.integer  "team"
-    t.date     "date_played"
+    t.datetime "date_played"
   end
 
   create_table "matches", :force => true do |t|
-    t.date     "date_played"
+    t.datetime "date_played"
     t.integer  "duration_seconds"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false

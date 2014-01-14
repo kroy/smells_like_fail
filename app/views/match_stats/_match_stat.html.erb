@@ -7,7 +7,7 @@
 <!--<tr class=<%=color%>>-->
 <!--need to add a spacer between teams-->
 <!--need to make this tr tag a bit more railsy -->
-<tr class="match-stat-row <%= color if color%>" href=<%= if player then "/matches/#{match_stat.match_id}" else "/users/#{match_stat.nickname.downcase}" end%>>
+<tr class="match-stat-row <%= color if color%>" href=<%= if player then "/matches/#{match_stat.match_number}" else "/users/#{match_stat.nickname.downcase}" end%>>
   <% if player %>
     <td class="date"><%= match_stat.date_played.strftime("%m/%d/%y") if match_stat.date_played %></td>
   <% end %>

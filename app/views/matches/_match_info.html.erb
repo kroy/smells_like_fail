@@ -6,23 +6,25 @@
 		</tr>
 		<tr>
 			<td class="statfield">Duration</td>
-			<td class="statvalue"><%="#{@match.duration_seconds/60}:%02d" %(@match.duration_seconds%60) %></li>
+			<td class="statvalue"><%="#{@match.duration_seconds/60}:%02d" %(@match.duration_seconds%60) if @match.duration_seconds %></li>
 		</tr>
 		<tr>
 			<td class="statfield">Avg GPM:</td>
 			<td class="statvalue">
-				<% ary = (@match_stats.reduce([]){|ary,st| ary << st.gpm}) %>
-				<%= (ary.inject(:+).to_f/ary.length).round(2) %>
+				<% if @match_stats.any? %>
+					<% ary = (@match_stats.reduce([]){|ary,st| ary << st.gpm}) %>
+					<%= (ary.inject(:+).to_f/ary.length).round(2) %>
+				<% end %>
 			</td>
 		</tr>
 		<!--This is terrible, fix it-->
 		<tr>
 			<td class="statfield">Highest GPM</td>
-			<td class="statvalue"><%= link_to @highest_gpm, "/users/#{@highest_gpm.downcase}" %></li>
+			<td class="statvalue"><%= link_to @highest_gpm, "/users/#{@highest_gpm.downcase}" if @highest_gpm %></li>
 		</tr>
 		<tr>
 			<td class="statfield">Most Wards</td>
-			<td class="statvalue"><%= link_to @highest_wards, "/users/#{@highest_wards.downcase}" %></li>
+			<td class="statvalue"><%= link_to @highest_wards, "/users/#{@highest_wards.downcase}" if @highest_wards %></li>
 		</tr>
 	</table>
 	<p>Updated <%=time_ago_in_words(@match.updated_at)%> ago</p>

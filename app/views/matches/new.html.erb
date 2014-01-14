@@ -1,0 +1,15 @@
+<% provide(:title, 'Create Match') %>
+<h1>Create a Match</h1>
+<div class="row">
+	<div class="span6 offset3">
+		<%= form_for(@match) do |f| %>
+			<%= f.label :match_number %>
+			<%= f.text_field :match_number%>
+
+			<%= f.label :password %>
+			<%= f.password_field :password %>
+
+			<%= f.submit "Add Match", class: "btn btn-large btn-primary" %>
+		<% end %>
+	</div>
+</div>
