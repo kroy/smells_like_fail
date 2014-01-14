@@ -21,7 +21,7 @@ end
 
 group :production do
 	gem 'pg','0.12.2'
-	#gem 'unicorn'
+	gem 'unicorn'
 end
 
 # Gems used only for assets and not required
