@@ -14,14 +14,14 @@ gem 'rubyzip', '>= 1.0.0'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 group :development, :test do
 	#gem 'sqlite3', '1.3.5'
-	gem 'pg','0.12.2'
+	gem 'pg' #,'0.12.2'
 	gem 'rspec-rails', '2.11.0'
 	gem 'guard-rspec', '1.2.1'
 end
 
 group :production do
-	gem 'pg','0.12.2'
-	gem 'unicorn'
+	gem 'pg' #,'0.12.2'
+	#gem 'unicorn'
 end
 
 # Gems used only for assets and not required
