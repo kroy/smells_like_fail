@@ -72,8 +72,8 @@ SmellsLikeFail::Application.configure do
   config.proxy_url = "http://ec2-54-204-25-163.compute-1.amazonaws.com"
 
   # Controls the amount of time that must have passed since the last update to this user
-  config.refresh_threshold_in_seconds = 86400   # 24 hours
+  config.refresh_threshold_in_seconds = 1 #86400   # 24 hours
 
   # Controls whether we are accepting new users or not
-  config.new_users_accepted = false
+  config.new_users_accepted = true
 end
