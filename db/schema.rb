@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140113210150) do
+ActiveRecord::Schema.define(:version => 20140115180257) do
 
   create_table "events", :force => true do |t|
     t.integer  "match_id"
@@ -124,7 +124,5 @@ ActiveRecord::Schema.define(:version => 20140113210150) do
     t.integer  "hon_id"
     t.datetime "last_refreshed"
   end
-
-  add_index "users", ["nickname"], :name => "index_users_on_nickname", :unique => true
 
 end

@@ -3,7 +3,7 @@
 # Table name: matches
 #
 #  id               :integer          not null, primary key
-#  date_played      :date
+#  date_played      :datetime
 #  duration_seconds :integer
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null

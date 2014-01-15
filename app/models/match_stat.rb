@@ -51,7 +51,7 @@
 #  hon_id          :integer
 #  win             :integer
 #  team            :integer
-#  date_played     :date
+#  date_played     :datetime
 #
 
 class MatchStat < ActiveRecord::Base

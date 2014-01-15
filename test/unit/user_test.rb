@@ -31,6 +31,7 @@
 #  avg_denies              :float
 #  last_match              :integer
 #  hon_id                  :integer
+#  last_refreshed          :datetime
 #
 
 require 'test_helper'
