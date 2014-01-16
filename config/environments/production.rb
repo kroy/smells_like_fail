@@ -69,7 +69,7 @@ SmellsLikeFail::Application.configure do
   config.hon_api_token = "AT4BXU0GQUJIIGY8"
 
   #AWS Proxy info
-  config.proxy_url = "http://ec2-54-204-25-163.compute-1.amazonaws.com"
+  config.proxy_url = "http://ec2-54-204-25-163.compute-1.amazonaws.com:8080"
 
   # Controls the amount of time that must have passed since the last update to this user
   config.refresh_threshold_in_seconds = 1 #86400   # 24 hours
