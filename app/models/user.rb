@@ -85,7 +85,7 @@ class User < ActiveRecord::Base
     # TODO add error handling
     begin
         logger.debug "**************entering api caller with vars: #{nick} and #{Rails.application.config.hon_api_token}"
-        json = open "http://api.heroesofnewerth.com/player_statistics/ranked/nickname/#{nick}/?token=#{Rails.application.config.hon_api_token}"
+        json = open "http://api.heroesofnewerth.com/player_statistics/ranked/nickname/#{nick}/?token=#{Rails.application.config.hon_api_token}", proxy: Rails.application.config.proxy_url
         unfiltered = JSON.parse(json.read)
         
         filtered = {}
