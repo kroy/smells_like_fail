@@ -8,7 +8,6 @@ gem 'json'
 gem 'jquery-rails'#, '2.0.2'
 gem 'gon'
 gem 'rubyzip', '>= 1.0.0'
-gem 'open-uri'
 #gem 'highcharts'
 
 # Bundle edge Rails instead:
