@@ -1,3 +1,5 @@
+require 'open-uri'
+
 class UsersController < ApplicationController
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
@@ -32,6 +34,7 @@ class UsersController < ApplicationController
   end
 
   def new
+    open("http://www.heroesofnewerth.com")
     @user = User.new
   end
 
