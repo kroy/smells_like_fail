@@ -32,7 +32,6 @@ class UsersController < ApplicationController
   end
 
   def new
-    open("http://www.heroesofewerth.com") {|f| puts "**************Test connection to proxy: #{f.meta}"}
     @user = User.new
   end
 
