@@ -20,6 +20,8 @@
 #  updated_at   :datetime         not null
 #  nickname     :string(255)
 #
+require 'open-uri'
+
 
 class Event < ActiveRecord::Base
   attr_accessible :match_id, :match_num, :time, :type, :x, :y, :z

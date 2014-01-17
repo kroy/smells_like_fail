@@ -1,5 +1,6 @@
 require 'zip'
 require 'net/http'
+require 'open-uri'
 
 # encoding: UTF-8
 

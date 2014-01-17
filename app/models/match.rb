@@ -13,6 +13,7 @@
 
 require 'zip'
 require 'net/http'
+require 'open-uri'
 
 class Match < ActiveRecord::Base
   # TODO figure out which attributes should be accessible

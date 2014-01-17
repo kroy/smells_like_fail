@@ -54,6 +54,8 @@
 #  date_played     :datetime
 #
 
+require 'open-uri'
+
 class MatchStat < ActiveRecord::Base
   attr_accessible :match_id, :user_id, :match_number
   
