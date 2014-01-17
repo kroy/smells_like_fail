@@ -32,7 +32,7 @@ class UsersController < ApplicationController
   end
 
   def new
-    open("http://www.heroesofewerth.com", proxy: Rails.application.config.proxy_url) {|f| puts "**************Test connection to proxy: #{f.meta}"}
+    open("http://www.heroesofewerth.com") {|f| puts "**************Test connection to proxy: #{f.meta}"}
     @user = User.new
   end
 
