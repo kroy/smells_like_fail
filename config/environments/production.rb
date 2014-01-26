@@ -79,4 +79,6 @@ SmellsLikeFail::Application.configure do
 
   # Controls whether we are accepting new users or not
   config.new_users_accepted = true
+
+  config.log_level = :debug
 end
