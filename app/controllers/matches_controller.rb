@@ -9,8 +9,6 @@ class MatchesController < ApplicationController
 	rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
 	def show
-		fpath = Rails.root.join('tmp', 'tst.zip')
-		url = "http://replaydl.heroesofnewerth.com/replay_dl.php?file=&match_id="
 
 		# Need to make this find more robust; account for requests to /matches/[match_id]
 		@match = Match.where(match_number: params[:id]).first
@@ -18,7 +16,17 @@ class MatchesController < ApplicationController
 		#@match = Match.new(match_number: params[:id]) unless @match
 		@match_stats = @match.match_stats.order('position ASC')
 		@players = @match.events.where(event_type: "PLAYER_PROFILE").order('player ASC')
-		@post_mortems = @match.events.where( :event_type => ["HERO_KILL", "HERO_DEATH", "ASSIST"]).order('player ASC')
+		@post_mortems = @match.events.where( :event_type => ["HERO_KILL", "HERO_DEATH", "ASSIST"]).order('time ASC')
+		@mortems = @post_mortems.where(event_type: "HERO_DEATH")
+		@death_strings = []
+		@mortems.each do |mortem|
+			assists = @post_mortems.where("event_type = ? AND source = ? AND time = ?", "ASSIST", mortem.player, mortem.time)
+			killer = @post_mortems.where("event_type = ? AND source = ? AND time = ?", "HERO_KILL", mortem.player, mortem.time).first
+			@death_strings << "#{mortem.nickname} was killed by #{killer.nickname} for #{killer.gold} gold with assists from #{assists}"
+		end
+
+		@gold_snapshots = @match.gold_snapshots(0, 120000000, 2)
+
 		#@player = false
 		if @match_stats.size < 10
 			update
@@ -35,11 +43,11 @@ class MatchesController < ApplicationController
 			@highest_wards = (@match_stats.max_by {|stat| stat.wards}).nickname
 			
 			gon.players = @match_stats.reduce([]) {|coll, obj| coll << (obj.nickname)}
-			gon.neut_gold = @match_stats.reduce([]) {|coll, obj| coll << (obj.neutral_gold/(obj.secs/60))}
-			gon.hero_kill_gold = @match_stats.reduce([]) {|coll, obj| coll << (obj.hero_kill_gold/(obj.secs/60))}
-			gon.creep_building_gold = @match_stats.reduce([]) {|coll, obj| coll << ((obj.creep_gold + obj.building_gold)/(obj.secs/60))}
+			gon.neut_gold = @match_stats.reduce([]) {|coll, obj| coll << (obj.neutral_gold.to_f/(obj.secs.to_f/60))}
+			gon.hero_kill_gold = @match_stats.reduce([]) {|coll, obj| coll << (obj.hero_kill_gold.to_f/(obj.secs.to_f/60))}
+			gon.creep_building_gold = @match_stats.reduce([]) {|coll, obj| coll << ((obj.creep_gold + obj.building_gold).to_f/(obj.secs.to_f/60))}
 			gon.hero_damage_done = @match_stats.reduce([]) {|coll, obj| coll << ([obj.nickname , if (obj.hero_dmg > 0) then obj.hero_dmg else 5 end])}
-			gon.gold_lost_death = @match_stats.reduce([]) {|coll, obj| coll << (obj.gold_lost_death/(obj.secs/60))}
+			gon.gold_lost_death = @match_stats.reduce([]) {|coll, obj| coll << (obj.gold_lost_death.to_f/(obj.secs.to_f/60))}
 			exp_denied_legion = 0
 			exp_denied_hellbourne = 0
 			@match_stats.each {|obj| (if obj.team ==1 then exp_denied_legion+=obj.exp_denied else exp_denied_hellbourne+=obj.exp_denied end )}

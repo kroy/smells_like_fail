@@ -36,16 +36,18 @@ SmellsLikeFail::Application.configure do
   config.assets.debug = true
 
   # HoN API Key for development
-  config.hon_api_token = "XF2PH6YSH7QJCNZ9"
+  #config.hon_api_token = "XF2PH6YSH7QJCNZ9"
+  config.hon_api_token = "AT4BXU0GQUJIIGY8" #proxy token
   
   # AWS Proxy url
-  config.proxy_url = nil
+  #config.proxy_url = nil
+  config.proxy_url = "http://ec2-54-204-25-163.compute-1.amazonaws.com:8080"
   
   # Controls the amount of time that must have passed since the last update to this user
   config.refresh_threshold_in_seconds = 1
 
   # Controls whether or not to include events for matches
-  config.event_parsing_enabled = false
+  config.event_parsing_enabled = true
 
   # Controls whether we are accepting new users or not
   config.new_users_accepted = true

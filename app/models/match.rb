@@ -17,13 +17,11 @@ require 'open-uri'
 
 class Match < ActiveRecord::Base
   # TODO figure out which attributes should be accessible
-  attr_accessible :date_played, :duration_seconds, :match_number, :winner
+  attr_accessible :date_played, :duration_seconds, :match_number, :winner, :replay_url
 
   has_many :users, :through => :match_stats
   has_many :match_stats
   has_many :events
-
-  #TOKEN = "0WQJS7VTWA5PCNU1"
 
   def update_match_stats
   	#begin
@@ -83,6 +81,8 @@ class Match < ActiveRecord::Base
 	return logfile
   end
 
+  # TODO: periodic gold, items, runes, kongor, killstreaks
+
   def parse_events(logfile=nil)
   	unless logfile
   		logfile = get_log
@@ -121,14 +121,18 @@ class Match < ActiveRecord::Base
 
   def get_log
   	logger.debug("**************Before getting the initial resp for #{self.match_number}")
-	url = "http://replaydl.heroesofnewerth.com/replay_dl.php?file=&match_id=" + self.match_number.to_s
-	resp = Net::HTTP.get_response(URI(url))
-	logger.debug("**************Got the resp")
-	logurl = resp.to_hash["location"][0][0..-10] + "zip"
+	log_url = self.replay_url
+	unless log_url
+		url = "http://replaydl.heroesofnewerth.com/replay_dl.php?file=&match_id=" + self.match_number.to_s
+		resp = Net::HTTP.get_response(URI(url))
+		logger.debug("**************Got the resp: #{resp.to_hash}")
+		log_url = resp.to_hash["location"][0]
+	end
+	log_url = log_url[0..-10] + "zip"
 	#Change the path of the zip files
 	fpath = Rails.root.join('tmp', 'tst.zip')
 	open(fpath, 'wb') do |file|
-		file << open(logurl).read
+		file << open(log_url).read
 		logger.debug("**************Got zip file")
 	end
 	logfilepath = Rails.root.join('tmp', 'tmp.log')
@@ -181,10 +185,13 @@ class Match < ActiveRecord::Base
 			end
 			ev.build_event("exp_earned", params, players)
 		when "DAMAGE"
-
+			#need to be careful with this. Damage line doesn't contain time param
+		when "AWARD_KILL_STREAK"
+			ev.build_event("kill_streak", params, players)
 		when "GOLD_LOST"
 			logger.debug("********** So far, have death for: #{death.keys}")
-			ev.build_event("hero_death", params, players)
+			death[params[:player]][:gold] = params[:gold] if death[params[:player]]
+			ev.build_event("hero_death", death[params[:player]], players)
 			#should also add a  gold_lost event
 			last_line_seen = true
 		end
@@ -210,6 +217,61 @@ class Match < ActiveRecord::Base
 		ev.build_event("hero_kill", k, players)
 	end
   	logger.debug("*********** Leaving parse_death method")
+  end
+
+  # might want to enable users to see the cs for each player
+  def gold_snapshots(start_time=0, end_time, player) #should do this during event parsing
+  	logger.debug("************ Building gold snaps for player #{player} between #{start_time}s and #{end_time}s")
+  	gold_earned = self.events.where("event_type IN (?) AND player=? AND time>=? AND time<=?", ["GOLD_EARNED", "HERO_DEATH"], player, start_time*1000, end_time*1000).order('time ASC')
+	gold_snapshots = {}
+	gold_earned.each do |g|
+		slot = (g.time/10000).to_s
+		unless gold_snapshots[slot]
+			 #might be better to do this with arrays
+			gold_snapshots[slot] = {creeps: 0, neutrals:0, ancients: 0, heroes: 0, buildings: 0, gold_lost: 0}
+		end
+		if g.event_type == "HERO_DEATH"
+			gold_snapshots[slot][:gold_lost] += g.gold.to_f
+		elsif g.source == 20 || g.source == 22
+			gold_snapshots[slot][:creeps] += g.gold.to_f
+		elsif g.source == 21 || g.source == 23
+			gold_snapshots[slot][:buildings] += g.gold.to_f
+		elsif g.source == 24
+			gold_snapshots[slot][:ancients] += g.gold.to_f
+		elsif g.source == 25
+			gold_snapshots[slot][:neutrals] += g.gold.to_f
+		else
+			gold_snapshots[slot][:heroes] += g.gold.to_f
+		end
+	end
+	return gold_snapshots
+  end
+
+  def exp_snapshots(start_time=0, end_time, player) #should do this during event parsing
+  	logger.debug("************ Building gold snaps for player #{player} between #{start_time}s and #{end_time}s")
+  	gold_earned = self.events.where("event_type IN (?) AND player=? AND time>=? AND time<=?", ["GOLD_EARNED", "HERO_DEATH"], player, start_time*1000, end_time*1000).order('time ASC')
+	gold_snapshots = {}
+	gold_earned.each do |g|
+		slot = (g.time/10000).to_s
+		unless gold_snapshots[slot]
+			 #might be better to do this with arrays
+			gold_snapshots[slot] = {creeps: 0, neutrals:0, ancients: 0, heroes: 0, buildings: 0, gold_lost: 0}
+		end
+		if g.event_type == "HERO_DEATH"
+			gold_snapshots[slot][:gold_lost] += g.gold.to_f
+		elsif g.source == 20 || g.source == 22
+			gold_snapshots[slot][:creeps] += g.gold.to_f
+		elsif g.source == 21 || g.source == 23
+			gold_snapshots[slot][:buildings] += g.gold.to_f
+		elsif g.source == 24
+			gold_snapshots[slot][:ancients] += g.gold.to_f
+		elsif g.source == 25
+			gold_snapshots[slot][:neutrals] += g.gold.to_f
+		else
+			gold_snapshots[slot][:heroes] += g.gold.to_f
+		end
+	end
+	return gold_snapshots
   end
 
   def parse_params(raw)

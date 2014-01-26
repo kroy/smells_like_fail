@@ -34,7 +34,7 @@ class UsersController < ApplicationController
   end
 
   def new
-    open("http://www.heroesofnewerth.com"){|f| puts "*************** Got the request: #{f.meta}"}
+    #open("http://www.heroesofnewerth.com"){|f| puts "*************** Got the request: #{f.meta}"}
     @user = User.new
   end
 

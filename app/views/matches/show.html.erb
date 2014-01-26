@@ -26,17 +26,29 @@
     </div> 
 
     <% if @players.any? %>
-        <p><%= @players.to_a %></p>
         <% @players.each do |player| %>
           <p><%="#{player.nickname}: #{player.extra_params}" %></p>
         <% end %>
     <% end %>
 
-    <% if @post_mortems.any? %>
-        <% @post_mortems.each do |post_mortem| %>
+    <% if @mortems.any? %>
+        <% @mortems.each do |post_mortem| %>
           <p><%="#{post_mortem.event_type}: #{post_mortem.source}, #{post_mortem.time}, #{post_mortem.extra_params}" %></p>
         <% end %>
     <% end %>
+
+    <% if @death_strings.any? %>
+        <% @death_strings.each do |death| %>
+          <p><%=death %></p>
+        <% end %>
+    <% end %>
+
+    <% if @gold_snapshots %>
+        <% @gold_snapshots.each do |g| %>
+          <p><%= g %></p>
+        <% end %>
+    <% end %>
+
 
     <h4>Players</h4>
       <% if @match.match_stats.any? %>

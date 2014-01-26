@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140115180257) do
+ActiveRecord::Schema.define(:version => 20140117190718) do
 
   create_table "events", :force => true do |t|
     t.integer  "match_id"
@@ -91,6 +91,7 @@ ActiveRecord::Schema.define(:version => 20140115180257) do
     t.datetime "updated_at",       :null => false
     t.integer  "match_number"
     t.integer  "winner"
+    t.string   "replay_url"
   end
 
   create_table "users", :force => true do |t|

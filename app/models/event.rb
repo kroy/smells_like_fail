@@ -120,6 +120,12 @@ class Event < ActiveRecord::Base
     return self.save
   end
 
+  def build_kill_streak(params, players)
+    self.event_type = "KILL_STREAK"
+    self.extra_params = "count:#{params[:count]}"
+    return self.save
+  end
+
   def build_game_end(params, players)
   	logger.debug("************ Game over: #{params}")
   	self.event_type = "GAME_END"
@@ -129,8 +135,11 @@ class Event < ActiveRecord::Base
 
   def self.parse_npc_source(src)
   	return "20" if src.include?("Creep_Legion")
-  	return "21" if src.include?("Creep_Hellbourne")
-  	return "23" if src.include?("Neutral")
+    return "21" if src.include?("Building_Legion")
+  	return "22" if src.include?("Creep_Hellbourne")
+    return "23" if src.include?("Building_Hellbourne")
+    return "24" if src.include?("Neutral_Dragon") || src.include?("Neutral_Predasaur")
+  	return "25" if src.include?("Neutral")
   end
 
 end

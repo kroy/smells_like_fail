@@ -162,8 +162,8 @@ class MatchStat < ActiveRecord::Base
   def self.parse_and_create_match(matchstats)
     #@processed = []
     #logger.debug "Matchstats[1]: #{matchstats[1]}"
-    match_datetimes = {}
-    matchstats[-1].each {|summary| match_datetimes[summary["match_id"]] = DateTime.strptime(summary["mdt"], "%Y-%m-%d %H:%M:%S")}
+    match_datetimes = {}  #change the name of this
+    matchstats[-1].each {|summary| match_datetimes[summary["match_id"]] = [DateTime.strptime(summary["mdt"], "%Y-%m-%d %H:%M:%S"), summary["replay_url"]]}
   
     matchstats[1].each do |stats|
       matchstats[2].each do |part|
@@ -172,7 +172,8 @@ class MatchStat < ActiveRecord::Base
           #@processed << stats.dup
           #@statline = stats.dup
           match = Match.where(:match_number => @statline["match_id"].to_i).first_or_create(:duration_seconds => @statline["secs"].to_i, 
-                              :winner => (((@statline["wins"].to_i) + (@statline["team"]).to_i)%2 +1), :date_played => match_datetimes[@statline["match_id"]])
+                              :winner => (((@statline["wins"].to_i) + (@statline["team"]).to_i)%2 +1), :date_played => match_datetimes[@statline["match_id"]][0],
+                              :replay_url => match_datetimes[@statline["match_id"]][1])
           ms = match.match_stats.build
           ms.date_played = match.date_played
           ms.fill_stats(@statline)
