@@ -43,9 +43,12 @@ class UsersController < ApplicationController
   def create
     @user = User.new({:nickname => params[:user][:nickname]})
     if params[:user][:password] == "noobs4evr"
+      puts "*********Getting stats"
       stats = @user.stats_returner(true)
+      puts "*********Got stats"
       if stats
         # TODO this is bad fix it
+        puts "**********Trying to insert stats"
         stats.each_key {|field| @user.send("#{field}=", stats[field])}
         @user.last_refreshed = Time.now
         if @user.save
