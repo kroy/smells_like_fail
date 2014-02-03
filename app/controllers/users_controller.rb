@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   def show
   	#@user = User.find(params[:id])
     #unless @user
-    @user = User.where(nickname: params[:id]).first!
+    @user = User.where(nickname: params[:id].downcase).first!
     #end
     # TODO @refresh controls the presence of the refresh button.  Show the button, but make it disabled instead of hiding it
     @refresh = true
@@ -78,7 +78,11 @@ class UsersController < ApplicationController
     #rescue Exception => e
       #logger.error("************* User update failed with error: #{e}")
     #end
-    redirect_to user_path(@user.nickname)
+    respond_to do |format|
+      format.html {redirect_to user_path(@user.nickname)}
+      format.js
+    end
+    
   end
 
   #   Returns the last 25 matches this player has played

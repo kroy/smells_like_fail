@@ -1,6 +1,6 @@
 
 $(function(){
-	$('.match-stat-row').on('click', function(e){
+	$('#user-match-stats').delegate('tr', 'click', function(e){
                 window.location=$(this).attr('href');
         });
 });

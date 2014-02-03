@@ -1,7 +1,7 @@
 <% if player and (match_stat.win == 1) %>
-	<% color="success" %>
+	<% color="match-win" %>
 <% elsif player %>
-	<% color="error" %>
+	<% color="match-lose" %>
 <% else color="position-#{match_stat.position}" %>
 <% end %>
 <!--<tr class=<%=color%>>-->

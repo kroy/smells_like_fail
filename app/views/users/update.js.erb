@@ -1,1 +1,1 @@
-$("<%= escape_javascript(render @match_stats) %>").appendTo("#user-match-stats");
+$("#user-match-stats-rows").replaceWith("<tbody id='user-match-stats-rows'><%= escape_javascript(render @user.match_stats.paginate(page: params[:page], per_page: 25).order('date_played DESC'), player: true) %> </tbody>");

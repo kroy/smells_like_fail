@@ -1,5 +1,8 @@
 SmellsLikeFail::Application.routes.draw do
-  resources :users, :matches
+  resources :users
+  resources :matches do
+    resources :events, only: [:index, :create]
+  end
 
   root to: 'static_pages#home'
   match '/about',   to: 'static_pages#about'

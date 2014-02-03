@@ -9,7 +9,7 @@
       </h1>
       <!--Railsify this, ie put it in a separate view or erb file-->
       <%= render 'users/user_stats' %>
-      <%= button_to("Refresh", @user, method: :put, class: "btn btn-inverse btn-small") if @refresh %>
+      <%= button_to("Refresh", @user, method: :put, remote:true, data: {disable_with: "Loading..."}, class: "btn btn-inverse btn-small") if @refresh %>
       <button id="test-btn">Test</button>
 
     </section>
@@ -44,9 +44,11 @@
               <th></th>
             </tr>
           </thead>
-          <%= render @match_stats, :player => true%>
+          <tbody id="user-match-stats-rows">
+          <%= render @user.match_stats.paginate(page: params[:page], per_page: 25).order("date_played DESC"), :player => true%>
+          </tbody>
         </table>
-        <%= will_paginate @match_stats %>
+        <%= will_paginate @user.match_stats.paginate(page: params[:page], per_page: 25) %>
       <% end %>
   </div>
 </div>
